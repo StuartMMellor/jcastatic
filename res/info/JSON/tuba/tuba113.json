@@ -1,0 +1,27 @@
+{
+  "part": "Tuba",
+  "absoluteNumber": 113,
+  "relativeNumber": 5,
+  "soundEvents": [
+    {
+      "start": 0.2135008,
+      "id": "01"
+    },
+    {
+      "start": 0.48665622,
+      "id": "02"
+    },
+    {
+      "start": 0.6724228,
+      "id": "03"
+    },
+    {
+      "start": 0.6849817,
+      "id": "04"
+    },
+    {
+      "start": 0.8529566,
+      "id": "05"
+    }
+  ]
+}

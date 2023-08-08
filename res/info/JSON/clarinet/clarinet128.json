@@ -1,0 +1,15 @@
+{
+  "part": "clarinet",
+  "absoluteNumber": 128,
+  "relativeNumber": 8,
+  "soundEvents": [
+    {
+      "start": 0.4503205,
+      "id": "01"
+    },
+    {
+      "start": 0.63247866,
+      "id": "02"
+    }
+  ]
+}

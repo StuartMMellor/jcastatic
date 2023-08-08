@@ -1,0 +1,31 @@
+{
+  "part": "Bassoon",
+  "absoluteNumber": 150,
+  "relativeNumber": 6,
+  "soundEvents": [
+    {
+      "start": 0.23210635,
+      "id": "01"
+    },
+    {
+      "start": 0.29141104,
+      "id": "02"
+    },
+    {
+      "start": 0.46063396,
+      "id": "03"
+    },
+    {
+      "start": 0.47546014,
+      "id": "04"
+    },
+    {
+      "start": 0.70194275,
+      "id": "05"
+    },
+    {
+      "start": 0.8266871,
+      "id": "06"
+    }
+  ]
+}

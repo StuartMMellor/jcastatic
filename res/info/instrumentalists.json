@@ -1,0 +1,58 @@
+{
+    "bass": {
+        "name": "John",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "bassoon": {
+        "name": "Dick",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "cello": {
+        "name": "Harry",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "clarinet": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "flute": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "trombone": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "trumpet": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "tuba": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "viola1": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "viola2": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "violin1": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "violin2": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "violin3": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    },
+    "piano": {
+        "name": "Insert Name",
+        "info": "Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"
+    }
+}

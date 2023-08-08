@@ -1,0 +1,31 @@
+{
+  "part": "Trumpet",
+  "absoluteNumber": 83,
+  "relativeNumber": 3,
+  "soundEvents": [
+    {
+      "start": 0.116780646,
+      "id": "01"
+    },
+    {
+      "start": 0.25881115,
+      "id": "02"
+    },
+    {
+      "start": 0.3214098,
+      "id": "03"
+    },
+    {
+      "start": 0.7506575,
+      "id": "04"
+    },
+    {
+      "start": 0.9274066,
+      "id": "05"
+    },
+    {
+      "start": 0.9347711,
+      "id": "06"
+    }
+  ]
+}

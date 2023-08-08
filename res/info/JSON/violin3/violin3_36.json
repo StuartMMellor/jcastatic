@@ -1,0 +1,15 @@
+{
+  "part": "Violin 3",
+  "absoluteNumber": 36,
+  "relativeNumber": 4,
+  "soundEvents": [
+    {
+      "start": 0.2544784,
+      "id": "01"
+    },
+    {
+      "start": 0.82191784,
+      "id": "02"
+    }
+  ]
+}

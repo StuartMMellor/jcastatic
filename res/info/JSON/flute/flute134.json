@@ -1,0 +1,23 @@
+{
+  "part": "Flute",
+  "absoluteNumber": 134,
+  "relativeNumber": 2,
+  "soundEvents": [
+    {
+      "start": 0.054744523,
+      "id": "01"
+    },
+    {
+      "start": 0.36287802,
+      "id": "02"
+    },
+    {
+      "start": 0.55526585,
+      "id": "03"
+    },
+    {
+      "start": 0.69708026,
+      "id": "04"
+    }
+  ]
+}

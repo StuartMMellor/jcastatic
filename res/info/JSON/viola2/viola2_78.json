@@ -1,0 +1,23 @@
+{
+  "part": "Viola 2",
+  "absoluteNumber": 78,
+  "relativeNumber": 14,
+  "soundEvents": [
+    {
+      "start": 0.049790353,
+      "id": "01"
+    },
+    {
+      "start": 0.11006289,
+      "id": "02"
+    },
+    {
+      "start": 0.24580713,
+      "id": "03"
+    },
+    {
+      "start": 0.29874212,
+      "id": "04"
+    }
+  ]
+}

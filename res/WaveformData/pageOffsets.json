@@ -1,0 +1,90 @@
+{
+	"instrument_count" : 14,
+	"instruments": [
+		{
+			"part": "piano",
+			"absPageStart": 1,
+			"absPageEnd": 15,
+			"pageN": 15
+		},
+		{
+			"part": "bass",
+			"absPageStart": 157,
+			"absPageEnd": 172,
+			"pageN": 16
+		},
+		{
+			"part": "bassoon",
+			"absPageStart": 145,
+			"absPageEnd": 156,
+			"pageN": 12
+		},
+		{
+			"part": "cello",
+			"absPageStart": 93,
+			"absPageEnd": 108,
+			"pageN": 16
+		},
+		{
+			"part": "clarinet",
+			"absPageStart": 121,
+			"absPageEnd": 132,
+			"pageN": 12
+		},
+		{
+			"part": "flute",
+			"absPageStart": 133,
+			"absPageEnd": 144,
+			"pageN": 12
+		},
+		{
+			"part": "trombone",
+			"absPageStart": 173,
+			"absPageEnd": 184,
+			"pageN": 12
+		},
+		{
+			"part": "trumpet",
+			"absPageStart": 81,
+			"absPageEnd": 92,
+			"pageN": 12
+		},
+		
+		{
+			"part": "tuba",
+			"absPageStart": 109,
+			"absPageEnd": 120,
+			"pageN": 12
+		},
+		{
+			"part": "viola1",
+			"absPageStart": 49,
+			"absPageEnd": 64,
+			"pageN": 16
+		},
+		{
+			"part": "viola2",
+			"absPageStart": 65,
+			"absPageEnd": 80,
+			"pageN": 16
+		},
+		{
+			"part": "violin1",
+			"absPageStart": 1,
+			"absPageEnd": 16,
+			"pageN": 16
+		},
+		{
+			"part": "violin2",
+			"absPageStart": 17,
+			"absPageEnd": 32,
+			"pageN": 16
+		},
+		{
+			"part": "violin3",
+			"absPageStart": 33,
+			"absPageEnd": 48,
+			"pageN": 16
+		}
+	]
+}

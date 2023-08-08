@@ -1,0 +1,23 @@
+{
+  "part": "piano",
+  "absoluteNumber": 12,
+  "relativeNumber": 12,
+  "soundEvents": [
+    {
+      "start": 0.0,
+      "id": "01"
+    },
+    {
+      "start": 0.23828909090909092,
+      "id": "02"
+    },
+    {
+      "start": 0.47656,
+      "id": "03"
+    },
+    {
+      "start": 0.7148581818181818,
+      "id": "04"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "part": "bass",
+  "absoluteNumber": 160,
+  "relativeNumber": 4,
+  "soundEvents": [
+    {
+      "start": 0.10073452,
+      "id": "01"
+    },
+    {
+      "start": 0.3273872,
+      "id": "02"
+    }
+  ]
+}

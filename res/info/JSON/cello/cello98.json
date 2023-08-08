@@ -1,0 +1,19 @@
+{
+  "part": "cello",
+  "absoluteNumber": 98,
+  "relativeNumber": 6,
+  "soundEvents": [
+    {
+      "start": 0.008363827,
+      "id": "01"
+    },
+    {
+      "start": 0.053319395,
+      "id": "02"
+    },
+    {
+      "start": 0.49607944,
+      "id": "03"
+    }
+  ]
+}

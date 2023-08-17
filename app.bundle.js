@@ -58103,7 +58103,7 @@ var violin1JSON = resLocation + '/info/urls/Violin1/Violin1.json';
 var violin2JSON = resLocation + '/info/urls/Violin2/Violin2.json';
 var violin3JSON = resLocation + '/info/urls/Violin3/Violin3.json';
 var pageSizesJSON = resLocation + '/info/PageFileSizes.json';
-var waveformFilesLoc = '../../static/res/WaveformData';
+var waveformFilesLoc = 'res/WaveformData';
 
 /***/ }),
 
@@ -61623,7 +61623,7 @@ var violin3JSON = resLocation + '/info/urls/Violin3/Violin3.json';
 exports.violin3JSON = violin3JSON;
 var pageSizesJSON = resLocation + '/info/PageFileSizes.json';
 exports.pageSizesJSON = pageSizesJSON;
-var waveformFilesLoc = '../../static/res/WaveformData';
+var waveformFilesLoc = 'res/WaveformData';
 exports.waveformFilesLoc = waveformFilesLoc;
 
 /***/ }),

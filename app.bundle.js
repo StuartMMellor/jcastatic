@@ -56139,26 +56139,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _GetFromServer__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./GetFromServer */ "./src/Data/GetFromServer.jsx");
 /* harmony import */ var _getInstrumentData_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./getInstrumentData.jsx */ "./src/Data/getInstrumentData.jsx");
-/* harmony import */ var _static_res_info_pagesDurs_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../static/res/info/pagesDurs.json */ "./static/res/info/pagesDurs.json");
+/* harmony import */ var _appContext__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../appContext */ "./src/appContext.jsx");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get.bind(); } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf.bind() : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 
-var instNames = ["violin3", "trombone", "violin2", "violin1", "cello", "flute", "bass", "trumpet", "tuba", "viola2", "viola1", "bassoon", "clarinet", "piano"];
+var instNames = ['violin3', 'trombone', 'violin2', 'violin1', 'cello', 'flute', 'bass', 'trumpet', 'tuba', 'viola2', 'viola1', 'bassoon', 'clarinet', 'piano'];
 var GenSelections = /*#__PURE__*/function () {
   function GenSelections() {
     var _this = this;
     _classCallCheck(this, GenSelections);
     _defineProperty(this, "connectToResources", function (retries) {
-      _this.pageDurations = _static_res_info_pagesDurs_json__WEBPACK_IMPORTED_MODULE_2__;
-      _this.ready = true;
-      return 0;
+      if (retries < 10) {
+        new Promise(function (_resolve, reject) {
+          (0,_GetFromServer__WEBPACK_IMPORTED_MODULE_0__.axiosGet)(_appContext__WEBPACK_IMPORTED_MODULE_2__.pageDursJSON, serverPort, _resolve, reject, retries);
+        }).then(function (response) {
+          _this.pageDurations = response.data.pagesDurs;
+          _this.ready = true;
+
+          // super.componentReady("genSel");
+          return 0;
+        })["catch"](function (error) {
+          console.log(error);
+          // this.connectToResources(retries++);
+        });
+      } else {
+        console.log('Failed to connect to resources!\nThere is an issue with the server!');
+        _get(_getPrototypeOf(GenSelections.prototype), "componentFailed", _this).call(_this, 'genSel');
+        return -1;
+      }
     });
     _defineProperty(this, "generate", function (instN, _pageN, dur, incPiano, pianoDurErr, addInstruments, randomPageSizes, incSilences, __resolve) {
       var getData = new _getInstrumentData_jsx__WEBPACK_IMPORTED_MODULE_1__["default"]();
@@ -56167,7 +56185,7 @@ var GenSelections = /*#__PURE__*/function () {
         if (incPiano) {
           var availablePianoPages = [];
           new Promise(function (_resolve, reject) {
-            getData.getMinimumDurations("piano", 0, _resolve);
+            getData.getMinimumDurations('piano', 0, _resolve);
           }).then(function (pianoMinDurs) {
             var pianoDurs = pianoMinDurs.pages; // this.pageDurations[instNames.length-1].pageDurs;
             var min = 1000000000;
@@ -56202,7 +56220,7 @@ var GenSelections = /*#__PURE__*/function () {
               }
             }
             sels.push({
-              inst: "piano",
+              inst: 'piano',
               instId: 13,
               pages: pianoPages
             });
@@ -56252,7 +56270,7 @@ var GenSelections = /*#__PURE__*/function () {
               if (minimumLength + pageMinDur > dur) {
                 pagesLeft = [];
               } else {
-                if (typeof pagesLeft[pSel] === "undefined") {
+                if (typeof pagesLeft[pSel] === 'undefined') {
                   break;
                 }
                 var incSilence = 0;
@@ -56262,7 +56280,7 @@ var GenSelections = /*#__PURE__*/function () {
                 if (incSilence > 0.8) {
                   pages.push({
                     id: 0,
-                    name: "silence",
+                    name: 'silence',
                     minDur: 0,
                     genDur: 0
                   });
@@ -56355,14 +56373,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "axiosGet": () => (/* binding */ axiosGet),
 /* harmony export */   "getFromServer": () => (/* binding */ getFromServer)
 /* harmony export */ });
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
+// import axios from 'axios';
 
 function getFromServer(URL, port, resolve) {
   var urlPrefix = "./"; //`${location.protocol}//${location.hostname}/`;
   console.log({
     URL: URL
   });
-  return (0,axios__WEBPACK_IMPORTED_MODULE_0__["default"])({
+  return axios({
     method: 'get',
     url: urlPrefix + URL
   }).then(function (response) {
@@ -56387,7 +56405,7 @@ function getFromServer(URL, port, resolve) {
 }
 function axiosGet(URL, resolve, reject, retries) {
   var urlPrefix = "/"; //`${location.protocol}//${location.hostname}/`;
-  return (0,axios__WEBPACK_IMPORTED_MODULE_0__["default"])({
+  return axios({
     method: 'get',
     url: urlPrefix + URL,
     timeout: 5000
@@ -56454,7 +56472,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! util */ "./node_modules/util/util.js");
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../static/res/info/instrumentPages.json */ "./static/res/info/instrumentPages.json");
+/* harmony import */ var _appContext__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../appContext */ "./src/appContext.jsx");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
@@ -56464,77 +56482,84 @@ function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _ty
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
-var waveformFilesLoc = "../../static/res/waveformdata";
-var axios = __webpack_require__(/*! axios */ "./node_modules/axios/dist/browser/axios.cjs");
+
+// const axios = require('axios')
 var GetAudioWFD = /*#__PURE__*/_createClass(function GetAudioWFD(_props) {
   var _this = this;
   _classCallCheck(this, GetAudioWFD);
   _defineProperty(this, "getPageData", function (props, callback) {
     var inst;
-    new Promise(function (resolveInner, reject) {
-      inst = _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_1__.find(function (inst) {
-        return inst.part === props.inst;
-      });
-      var lrg = true;
-      var pageOffset = inst.pages[0].absoluteNumber;
-      var SEN = inst.pages[props.page].soundEvents.length;
-      if (inst.part === "piano") SEN = 1;
-      var waveformURLS = [];
-      var suffix = "_SML.txt";
-      if (lrg) {
-        suffix = "_LRG.txt";
-      }
-      var page = pageOffset + props.page;
-      var idx;
-      for (var i = 0; i < SEN; i++) {
-        idx = i + 1;
-        if (idx < 10) {
-          idx = "0".concat(idx.toString());
-        }
-        waveformURLS[i] = "".concat(waveformFilesLoc, "/").concat(props.inst, "/").concat(props.inst.charAt(0).toUpperCase() + props.inst.slice(1), "-").concat(page, "-").concat(idx).concat(suffix);
-      }
-      resolveInner(waveformURLS);
-    }).then(function (pageData) {
-      new Promise(function (resolve, reject) {
-        var pageWaveformData = [];
-        var i;
-        for (i = 0; i < pageData.length; i++) {
-          pageWaveformData.push(_this.collateSoundEvents(pageData[i]));
-        }
-        Promise.all(pageWaveformData).then(function (results) {
-          resolve(results);
-        })["catch"](function (e) {
-          console.log(e);
+
+    // new Promise((resolve, reject) => {
+    //   this.axiosGet(instrumentPagesJSON, resolve)
+    // }).then(pageData => {
+    Promise.resolve(/*! import() */).then(__webpack_require__.t.bind(__webpack_require__, /*! ../../static/res/info/instrumentPages.json */ "./static/res/info/instrumentPages.json", 19)).then(function (instrumentPages) {
+      new Promise(function (resolveInner, reject) {
+        inst = instrumentPages.find(function (inst) {
+          return inst.part === props.inst;
         });
-      }).then(function (pageWaveformData) {
+        var lrg = true;
+        var pageOffset = inst.pages[0].absoluteNumber;
+        var SEN = inst.pages[props.page].soundEvents.length;
+        if (inst.part === 'piano') SEN = 1;
+        var waveformURLS = [];
+        var suffix = '_SML.txt';
+        if (lrg) {
+          suffix = '_LRG.txt';
+        }
+        var page = pageOffset + props.page;
+        var idx;
+        for (var i = 0; i < SEN; i++) {
+          idx = i + 1;
+          if (idx < 10) {
+            idx = "0".concat(idx.toString());
+          }
+          waveformURLS[i] = "".concat(_appContext__WEBPACK_IMPORTED_MODULE_1__.waveformFilesLoc, "/").concat(props.inst, "/").concat(props.inst.charAt(0).toUpperCase() + props.inst.slice(1), "-").concat(page, "-").concat(idx).concat(suffix);
+        }
+        resolveInner(waveformURLS);
+      }).then(function (pageData) {
         new Promise(function (resolve, reject) {
-          resolve(_this.sendWaveformData(pageWaveformData, callback));
+          var pageWaveformData = [];
+          var i;
+          for (i = 0; i < pageData.length; i++) {
+            pageWaveformData.push(_this.collateSoundEvents(pageData[i]));
+          }
+          Promise.all(pageWaveformData).then(function (results) {
+            resolve(results);
+          })["catch"](function (e) {
+            console.log(e);
+          });
+        }).then(function (pageWaveformData) {
+          new Promise(function (resolve, reject) {
+            resolve(_this.sendWaveformData(pageWaveformData, callback));
+          });
         });
       });
     });
   });
   _defineProperty(this, "collateSoundEvents", function (SE) {
     return new Promise(function (resolve, reject) {
-      SE = SE.replace("bassoon", "sax");
-      SE = SE.replace("bassoon", "sax");
-      _this.axiosGet(SE, resolve);
+      SE = SE.replace('bassoon', 'sax');
+      SE = SE.replace('bassoon', 'sax');
+      console.log({
+        SE: SE
+      });
+      // this.axiosGet(SE, resolve)
+      resolve();
     });
   });
   _defineProperty(this, "sendWaveformData", function (pageWaveformData, callback) {
     callback(pageWaveformData);
   });
   _defineProperty(this, "axiosGet", function (URL, resolve) {
-    console.log({
-      axiosGet: URL
-    });
     return axios({
-      method: "get",
+      method: 'get',
       url: URL
     }).then(function (response) {
       resolve(response.data);
     })["catch"](function (error) {
       return axios({
-        method: "get",
+        method: 'get',
         url: URL
       }).then(function (response) {
         resolve(response.data);
@@ -56570,8 +56595,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ GetInstData)
 /* harmony export */ });
-/* harmony import */ var _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../static/res/info/fileTimings.json */ "./static/res/info/fileTimings.json");
-/* harmony import */ var _static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../static/res/info/instrumentalists.json */ "./static/res/info/instrumentalists.json");
+/* harmony import */ var _appContext__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../appContext */ "./src/appContext.jsx");
+/* harmony import */ var _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../static/res/info/fileTimings.json */ "./static/res/info/fileTimings.json");
+/* harmony import */ var _static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../static/res/info/instrumentalists.json */ "./static/res/info/instrumentalists.json");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -56581,31 +56607,63 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
 var axios = __webpack_require__(/*! axios */ "./node_modules/axios/dist/browser/axios.cjs");
 
 
+
 var GetInstData = /*#__PURE__*/function () {
   function GetInstData() {
     _classCallCheck(this, GetInstData);
     console.log({
-      fileTimings: JSON.stringify(_static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_0__)
+      fileTimings: JSON.stringify(_static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_1__)
     });
     console.log({
-      instrumentalists: _static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_1__
+      instrumentalists: _static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_2__
     });
   }
   _createClass(GetInstData, [{
     key: "getData",
     value: function getData(instrument, _resolve) {
-      _resolve(_static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_0__[instrument]);
+      console.log({
+        instrument: instrument
+      });
+      _resolve(_static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_1__[instrument]);
+      // const serve = axios.create()
+      // serve.defaults.timeout = 2500
+
+      // serve.defaults.baseURL = `/`
+      // const that = this
+
+      // console.log({ fileTimingsJSON })
+
+      // new Promise((resolve, reject) => {
+      //   resolve(
+      //     serve.get(fileTimingsJSON, {
+      //       responseType: 'json',
+      //       validateStatus (status) {
+      //         return status >= 200 && status < 300 // Default
+      //       }
+      //     })
+      //   )
+      // })
+      //   .then(response => {
+      //     _resolve(response.data[instrument])
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      //   })
     }
   }, {
     key: "getMinimumDurations",
     value: function getMinimumDurations(instrument, offset, callback) {
+      console.log({
+        instrument: instrument,
+        getmindur: true
+      });
       instrument = instrument.split(" ");
       if (instrument.constructor === Array) {
         if (instrument.length == 2) {
           instrument = instrument[0] + instrument[1];
         }
       }
-      var data = _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_0__[instrument];
+      var data = _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_1__[instrument];
 
       // new Promise((resolve, reject) => {
       //   this.getData(instrument, resolve);
@@ -56640,13 +56698,48 @@ var GetInstData = /*#__PURE__*/function () {
   }, {
     key: "getInstrumentalistInfo",
     value: function getInstrumentalistInfo(instrument, callback) {
+      console.log({
+        getInstrumentalistInfo: true,
+        instrument: instrument
+      });
       instrument = instrument.split(" ");
       if (instrument.constructor === Array) {
         if (instrument.length == 2) {
           instrument = instrument[0] + instrument[1];
         }
       }
-      callback(_static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_1__[instrument]);
+
+      // const serve = axios.create()
+      // serve.defaults.timeout = 2500
+
+      // serve.defaults.baseURL = `/`
+      // const that = this
+
+      // new Promise((resolve, reject) => {
+      //   resolve(
+      //     serve.get(instrumentalistsJSON, {
+      //       responseType: 'json',
+      //       validateStatus (status) {
+      //         return status >= 200 && status < 300 // Default
+      //       }
+      //     })
+      //   )
+      // })
+      //   .then(response => {
+      //     if (typeof response.data[instrument] !== 'undefined') {
+      //       callback(response.data[instrument])
+      //     } else {
+      //       throw `Error: "${instrument}" is undefined in instrument info!`
+      //     }
+      //   })
+      //   .catch(err => {
+      //     console.log(err)
+      console.log({
+        getInstrumentalistsinfo: true,
+        instrumentalistsinst: _static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_2__[instrument]
+      });
+      callback(_static_res_info_instrumentalists_json__WEBPACK_IMPORTED_MODULE_2__[instrument]);
+      // })
     }
   }]);
   return GetInstData;
@@ -56894,13 +56987,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! async */ "./node_modules/async/dist/async.js");
 /* harmony import */ var async__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(async__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var _scaling_jsx__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./scaling.jsx */ "./src/Player/Gather/scaling.jsx");
-/* harmony import */ var _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../static/res/info/fileTimings.json */ "./static/res/info/fileTimings.json");
-/* harmony import */ var _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../static/res/info/instrumentPages.json */ "./static/res/info/instrumentPages.json");
+/* harmony import */ var _static_appContext_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../static/appContext.js */ "./static/appContext.js");
+/* harmony import */ var _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../static/res/info/fileTimings.json */ "./static/res/info/fileTimings.json");
+/* harmony import */ var _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../static/res/info/instrumentPages.json */ "./static/res/info/instrumentPages.json");
 // Calculate Start Positions Based on Selected Duration
 
 
+// import Axios from 'axios'
 
 
 
@@ -56910,10 +57004,12 @@ function Arrange(selections, outerCallback, reject) {
     // Collect file durs and start positions.
     async__WEBPACK_IMPORTED_MODULE_0___default().parallel({
       durs: function durs(call) {
-        call(null, _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_2__);
+        call(null, _static_res_info_fileTimings_json__WEBPACK_IMPORTED_MODULE_3__);
+        //getApi(call, fileTimingsJSON)
       },
       soundEvents: function soundEvents(call) {
-        call(null, _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_3__);
+        call(null, _static_res_info_instrumentPages_json__WEBPACK_IMPORTED_MODULE_4__);
+        //getApi(call, instrumentPagesJSON)
       }
     }, function (err, results) {
       if (err) {
@@ -57031,7 +57127,7 @@ function Arrange(selections, outerCallback, reject) {
   });
 }
 function getApi(callback, getUrl) {
-  axios__WEBPACK_IMPORTED_MODULE_4__["default"].get(getUrl, {
+  Axios.get(getUrl, {
     responseType: 'json',
     validateStatus: function validateStatus(status) {
       return status >= 200 && status < 300; // Default
@@ -57151,7 +57247,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var async__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! async */ "./node_modules/async/dist/async.js");
 /* harmony import */ var async__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(async__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! axios */ "./node_modules/axios/lib/axios.js");
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! util */ "./node_modules/util/util.js");
 /* harmony import */ var util__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(util__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _Sequencer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Sequencer */ "./src/Player/Scheduler/Sequencer.jsx");
@@ -57179,7 +57274,7 @@ function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key i
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
-
+// import axios from 'axios'
 
 
 
@@ -57495,11 +57590,6 @@ var SchedulerGlobal = /*#__PURE__*/function () {
       return page.data.durs;
     });
     this.fileUrls = [];
-    this.serve = axios__WEBPACK_IMPORTED_MODULE_19__["default"].create();
-    this.serve.defaults.timeout = 10;
-    this.serve.defaults = {
-      timeout: 10
-    };
     this.pagesLoadedN = [];
     this.pageStartTimes = this.calculatePageStartPoints();
     this.seq;
@@ -57511,22 +57601,24 @@ var SchedulerGlobal = /*#__PURE__*/function () {
   _createClass(SchedulerGlobal, [{
     key: "componentDidMount",
     value: function componentDidMount() {}
-  }, {
-    key: "getApi",
-    value: function getApi(callback, getUrl) {
-      var that = this;
-      this.serve.get(getUrl, {
-        responseType: 'json',
-        validateStatus: function validateStatus(status) {
-          return status >= 200 && status < 300; // default
-        }
-      }).then(function (response) {
-        callback(null, response.data);
-      })["catch"](function (err) {
-        console.log(err);
-        callback(err, null);
-      });
-    }
+
+    //   getApi (callback, getUrl) {
+    //     const that = this
+    //     this.serve
+    //       .get(getUrl, {
+    //         responseType: 'json',
+    //         validateStatus (status) {
+    //           return status >= 200 && status < 300 // default
+    //         }
+    //       })
+    //       .then(response => {
+    //         callback(null, response.data)
+    //       })
+    //       .catch(err => {
+    //         console.log(err)
+    //         callback(err, null)
+    //       })
+    //   }
   }]);
   return SchedulerGlobal;
 }();
@@ -58040,6 +58132,65 @@ var SelectionRow = function SelectionRow(props) {
   }
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement("div", null);
 };
+
+/***/ }),
+
+/***/ "./src/appContext.jsx":
+/*!****************************!*\
+  !*** ./src/appContext.jsx ***!
+  \****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "bassJSON": () => (/* binding */ bassJSON),
+/* harmony export */   "bassoonJSON": () => (/* binding */ bassoonJSON),
+/* harmony export */   "celloJSON": () => (/* binding */ celloJSON),
+/* harmony export */   "clarinetJSON": () => (/* binding */ clarinetJSON),
+/* harmony export */   "durationsJSON": () => (/* binding */ durationsJSON),
+/* harmony export */   "fileTimingsJSON": () => (/* binding */ fileTimingsJSON),
+/* harmony export */   "fluteJSON": () => (/* binding */ fluteJSON),
+/* harmony export */   "instrumentPagesJSON": () => (/* binding */ instrumentPagesJSON),
+/* harmony export */   "instrumentalistsJSON": () => (/* binding */ instrumentalistsJSON),
+/* harmony export */   "pageDursJSON": () => (/* binding */ pageDursJSON),
+/* harmony export */   "pageSizesJSON": () => (/* binding */ pageSizesJSON),
+/* harmony export */   "pianoJSON": () => (/* binding */ pianoJSON),
+/* harmony export */   "resLocation": () => (/* binding */ resLocation),
+/* harmony export */   "serverAddress": () => (/* binding */ serverAddress),
+/* harmony export */   "tromboneJSON": () => (/* binding */ tromboneJSON),
+/* harmony export */   "trumpetJSON": () => (/* binding */ trumpetJSON),
+/* harmony export */   "tubaJSON": () => (/* binding */ tubaJSON),
+/* harmony export */   "viola1JSON": () => (/* binding */ viola1JSON),
+/* harmony export */   "viola2JSON": () => (/* binding */ viola2JSON),
+/* harmony export */   "violin1JSON": () => (/* binding */ violin1JSON),
+/* harmony export */   "violin2JSON": () => (/* binding */ violin2JSON),
+/* harmony export */   "violin3JSON": () => (/* binding */ violin3JSON),
+/* harmony export */   "waveformFilesLoc": () => (/* binding */ waveformFilesLoc)
+/* harmony export */ });
+var serverAddress = window['serverAddress'];
+var resLocation = serverAddress && serverAddress + '/res';
+var fileTimingsJSON = resLocation + '/info/fileTimings.json';
+var pageDursJSON = resLocation + '/info/pageDurs.json';
+var instrumentalistsJSON = resLocation + '/info/instrumentalists.json';
+var instrumentPagesJSON = resLocation + '/info/instrumentPages.json';
+var durationsJSON = '';
+var bassJSON = resLocation + '/info/urls/Bass/Bass.json';
+var bassoonJSON = resLocation + '/info/urls/Bassoon/Bassoon.json';
+var celloJSON = resLocation + '/info/urls/Cello/Cello.json';
+var clarinetJSON = resLocation + '/info/urls/Clarinet/Clarinet.json';
+var fluteJSON = resLocation + '/info/urls/Flute/Flute.json';
+var tromboneJSON = resLocation + '/info/urls/Trombone/Trombone.json';
+var trumpetJSON = resLocation + '/info/urls/Trumpet/Trumpet.json';
+var tubaJSON = resLocation + '/info/urls/Tuba/Tuba.json';
+var pianoJSON = resLocation + '/info/urls/Piano/Piano.json';
+var viola1JSON = resLocation + '/info/urls/Viola1/Viola1.json';
+var viola2JSON = resLocation + '/info/urls/Viola2/Viola2.json';
+var violin1JSON = resLocation + '/info/urls/Violin1/Violin1.json';
+var violin2JSON = resLocation + '/info/urls/Violin2/Violin2.json';
+var violin3JSON = resLocation + '/info/urls/Violin3/Violin3.json';
+var pageSizesJSON = resLocation + '/info/PageFileSizes.json';
+var waveformFilesLoc = resLocation + '/waveformdata';
 
 /***/ }),
 
@@ -61509,6 +61660,68 @@ var styles = function styles(props) {
   };
 };
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_mui_styles__WEBPACK_IMPORTED_MODULE_2__["default"])(styles)(ColoredLinearProgress));
+
+/***/ }),
+
+/***/ "./static/appContext.js":
+/*!******************************!*\
+  !*** ./static/appContext.js ***!
+  \******************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.waveformFilesLoc = exports.violin3JSON = exports.violin2JSON = exports.violin1JSON = exports.viola2JSON = exports.viola1JSON = exports.tubaJSON = exports.trumpetJSON = exports.tromboneJSON = exports.serverAddress = exports.resLocation = exports.pianoJSON = exports.pageSizesJSON = exports.pageDursJSON = exports.instrumentalistsJSON = exports.instrumentPagesJSON = exports.fluteJSON = exports.fileTimingsJSON = exports.durationsJSON = exports.clarinetJSON = exports.celloJSON = exports.bassoonJSON = exports.bassJSON = void 0;
+var serverAddress = window['serverAddress'];
+exports.serverAddress = serverAddress;
+var resLocation = serverAddress && serverAddress + '/res';
+exports.resLocation = resLocation;
+var fileTimingsJSON = resLocation + '/info/fileTimings.json';
+exports.fileTimingsJSON = fileTimingsJSON;
+var pageDursJSON = resLocation + '/info/pageDurs.json';
+exports.pageDursJSON = pageDursJSON;
+var instrumentalistsJSON = resLocation + '/info/instrumentalists.json';
+exports.instrumentalistsJSON = instrumentalistsJSON;
+var instrumentPagesJSON = resLocation + '/info/instrumentPages.json';
+exports.instrumentPagesJSON = instrumentPagesJSON;
+var durationsJSON = '';
+exports.durationsJSON = durationsJSON;
+var bassJSON = resLocation + '/info/urls/Bass/Bass.json';
+exports.bassJSON = bassJSON;
+var bassoonJSON = resLocation + '/info/urls/Bassoon/Bassoon.json';
+exports.bassoonJSON = bassoonJSON;
+var celloJSON = resLocation + '/info/urls/Cello/Cello.json';
+exports.celloJSON = celloJSON;
+var clarinetJSON = resLocation + '/info/urls/Clarinet/Clarinet.json';
+exports.clarinetJSON = clarinetJSON;
+var fluteJSON = resLocation + '/info/urls/Flute/Flute.json';
+exports.fluteJSON = fluteJSON;
+var tromboneJSON = resLocation + '/info/urls/Trombone/Trombone.json';
+exports.tromboneJSON = tromboneJSON;
+var trumpetJSON = resLocation + '/info/urls/Trumpet/Trumpet.json';
+exports.trumpetJSON = trumpetJSON;
+var tubaJSON = resLocation + '/info/urls/Tuba/Tuba.json';
+exports.tubaJSON = tubaJSON;
+var pianoJSON = resLocation + '/info/urls/Piano/Piano.json';
+exports.pianoJSON = pianoJSON;
+var viola1JSON = resLocation + '/info/urls/Viola1/Viola1.json';
+exports.viola1JSON = viola1JSON;
+var viola2JSON = resLocation + '/info/urls/Viola2/Viola2.json';
+exports.viola2JSON = viola2JSON;
+var violin1JSON = resLocation + '/info/urls/Violin1/Violin1.json';
+exports.violin1JSON = violin1JSON;
+var violin2JSON = resLocation + '/info/urls/Violin2/Violin2.json';
+exports.violin2JSON = violin2JSON;
+var violin3JSON = resLocation + '/info/urls/Violin3/Violin3.json';
+exports.violin3JSON = violin3JSON;
+var pageSizesJSON = resLocation + '/info/PageFileSizes.json';
+exports.pageSizesJSON = pageSizesJSON;
+var waveformFilesLoc = resLocation + '/waveformdata';
+exports.waveformFilesLoc = waveformFilesLoc;
 
 /***/ }),
 
@@ -66228,3614 +66441,6 @@ function combine(array, callback) {
 
 /***/ }),
 
-/***/ "./node_modules/axios/lib/adapters/adapters.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/axios/lib/adapters/adapters.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _http_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./http.js */ "./node_modules/axios/lib/helpers/null.js");
-/* harmony import */ var _xhr_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./xhr.js */ "./node_modules/axios/lib/adapters/xhr.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-
-
-
-
-const knownAdapters = {
-  http: _http_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-  xhr: _xhr_js__WEBPACK_IMPORTED_MODULE_1__["default"]
-};
-_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].forEach(knownAdapters, (fn, value) => {
-  if (fn) {
-    try {
-      Object.defineProperty(fn, 'name', {
-        value
-      });
-    } catch (e) {
-      // eslint-disable-next-line no-empty
-    }
-    Object.defineProperty(fn, 'adapterName', {
-      value
-    });
-  }
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  getAdapter: adapters => {
-    adapters = _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isArray(adapters) ? adapters : [adapters];
-    const {
-      length
-    } = adapters;
-    let nameOrAdapter;
-    let adapter;
-    for (let i = 0; i < length; i++) {
-      nameOrAdapter = adapters[i];
-      if (adapter = _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isString(nameOrAdapter) ? knownAdapters[nameOrAdapter.toLowerCase()] : nameOrAdapter) {
-        break;
-      }
-    }
-    if (!adapter) {
-      if (adapter === false) {
-        throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_3__["default"](`Adapter ${nameOrAdapter} is not supported by the environment`, 'ERR_NOT_SUPPORT');
-      }
-      throw new Error(_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].hasOwnProp(knownAdapters, nameOrAdapter) ? `Adapter '${nameOrAdapter}' is not available in the build` : `Unknown adapter '${nameOrAdapter}'`);
-    }
-    if (!_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isFunction(adapter)) {
-      throw new TypeError('adapter is not a function');
-    }
-    return adapter;
-  },
-  adapters: knownAdapters
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/adapters/xhr.js":
-/*!************************************************!*\
-  !*** ./node_modules/axios/lib/adapters/xhr.js ***!
-  \************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _core_settle_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./../core/settle.js */ "./node_modules/axios/lib/core/settle.js");
-/* harmony import */ var _helpers_cookies_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./../helpers/cookies.js */ "./node_modules/axios/lib/helpers/cookies.js");
-/* harmony import */ var _helpers_buildURL_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./../helpers/buildURL.js */ "./node_modules/axios/lib/helpers/buildURL.js");
-/* harmony import */ var _core_buildFullPath_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../core/buildFullPath.js */ "./node_modules/axios/lib/core/buildFullPath.js");
-/* harmony import */ var _helpers_isURLSameOrigin_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./../helpers/isURLSameOrigin.js */ "./node_modules/axios/lib/helpers/isURLSameOrigin.js");
-/* harmony import */ var _defaults_transitional_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../defaults/transitional.js */ "./node_modules/axios/lib/defaults/transitional.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../cancel/CanceledError.js */ "./node_modules/axios/lib/cancel/CanceledError.js");
-/* harmony import */ var _helpers_parseProtocol_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../helpers/parseProtocol.js */ "./node_modules/axios/lib/helpers/parseProtocol.js");
-/* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../platform/index.js */ "./node_modules/axios/lib/platform/browser/index.js");
-/* harmony import */ var _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-/* harmony import */ var _helpers_speedometer_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/speedometer.js */ "./node_modules/axios/lib/helpers/speedometer.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function progressEventReducer(listener, isDownloadStream) {
-  let bytesNotified = 0;
-  const _speedometer = (0,_helpers_speedometer_js__WEBPACK_IMPORTED_MODULE_0__["default"])(50, 250);
-  return e => {
-    const loaded = e.loaded;
-    const total = e.lengthComputable ? e.total : undefined;
-    const progressBytes = loaded - bytesNotified;
-    const rate = _speedometer(progressBytes);
-    const inRange = loaded <= total;
-    bytesNotified = loaded;
-    const data = {
-      loaded,
-      total,
-      progress: total ? loaded / total : undefined,
-      bytes: progressBytes,
-      rate: rate ? rate : undefined,
-      estimated: rate && total && inRange ? (total - loaded) / rate : undefined,
-      event: e
-    };
-    data[isDownloadStream ? 'download' : 'upload'] = true;
-    listener(data);
-  };
-}
-const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (isXHRAdapterSupported && function (config) {
-  return new Promise(function dispatchXhrRequest(resolve, reject) {
-    let requestData = config.data;
-    const requestHeaders = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from(config.headers).normalize();
-    const responseType = config.responseType;
-    let onCanceled;
-    function done() {
-      if (config.cancelToken) {
-        config.cancelToken.unsubscribe(onCanceled);
-      }
-      if (config.signal) {
-        config.signal.removeEventListener('abort', onCanceled);
-      }
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isFormData(requestData)) {
-      if (_platform_index_js__WEBPACK_IMPORTED_MODULE_3__["default"].isStandardBrowserEnv || _platform_index_js__WEBPACK_IMPORTED_MODULE_3__["default"].isStandardBrowserWebWorkerEnv) {
-        requestHeaders.setContentType(false); // Let the browser set it
-      } else {
-        requestHeaders.setContentType('multipart/form-data;', false); // mobile/desktop app frameworks
-      }
-    }
-
-    let request = new XMLHttpRequest();
-
-    // HTTP basic authentication
-    if (config.auth) {
-      const username = config.auth.username || '';
-      const password = config.auth.password ? unescape(encodeURIComponent(config.auth.password)) : '';
-      requestHeaders.set('Authorization', 'Basic ' + btoa(username + ':' + password));
-    }
-    const fullPath = (0,_core_buildFullPath_js__WEBPACK_IMPORTED_MODULE_4__["default"])(config.baseURL, config.url);
-    request.open(config.method.toUpperCase(), (0,_helpers_buildURL_js__WEBPACK_IMPORTED_MODULE_5__["default"])(fullPath, config.params, config.paramsSerializer), true);
-
-    // Set the request timeout in MS
-    request.timeout = config.timeout;
-    function onloadend() {
-      if (!request) {
-        return;
-      }
-      // Prepare the response
-      const responseHeaders = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from('getAllResponseHeaders' in request && request.getAllResponseHeaders());
-      const responseData = !responseType || responseType === 'text' || responseType === 'json' ? request.responseText : request.response;
-      const response = {
-        data: responseData,
-        status: request.status,
-        statusText: request.statusText,
-        headers: responseHeaders,
-        config,
-        request
-      };
-      (0,_core_settle_js__WEBPACK_IMPORTED_MODULE_6__["default"])(function _resolve(value) {
-        resolve(value);
-        done();
-      }, function _reject(err) {
-        reject(err);
-        done();
-      }, response);
-
-      // Clean up request
-      request = null;
-    }
-    if ('onloadend' in request) {
-      // Use onloadend if available
-      request.onloadend = onloadend;
-    } else {
-      // Listen for ready state to emulate onloadend
-      request.onreadystatechange = function handleLoad() {
-        if (!request || request.readyState !== 4) {
-          return;
-        }
-
-        // The request errored out and we didn't get a response, this will be
-        // handled by onerror instead
-        // With one exception: request that using file: protocol, most browsers
-        // will return status as 0 even though it's a successful request
-        if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-          return;
-        }
-        // readystate handler is calling before onerror or ontimeout handlers,
-        // so we should call onloadend on the next 'tick'
-        setTimeout(onloadend);
-      };
-    }
-
-    // Handle browser request cancellation (as opposed to a manual cancellation)
-    request.onabort = function handleAbort() {
-      if (!request) {
-        return;
-      }
-      reject(new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"]('Request aborted', _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"].ECONNABORTED, config, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle low level network errors
-    request.onerror = function handleError() {
-      // Real errors are hidden from us by the browser
-      // onerror should only fire if it's a network error
-      reject(new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"]('Network Error', _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"].ERR_NETWORK, config, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Handle timeout
-    request.ontimeout = function handleTimeout() {
-      let timeoutErrorMessage = config.timeout ? 'timeout of ' + config.timeout + 'ms exceeded' : 'timeout exceeded';
-      const transitional = config.transitional || _defaults_transitional_js__WEBPACK_IMPORTED_MODULE_8__["default"];
-      if (config.timeoutErrorMessage) {
-        timeoutErrorMessage = config.timeoutErrorMessage;
-      }
-      reject(new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"](timeoutErrorMessage, transitional.clarifyTimeoutError ? _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"].ETIMEDOUT : _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"].ECONNABORTED, config, request));
-
-      // Clean up request
-      request = null;
-    };
-
-    // Add xsrf header
-    // This is only done if running in a standard browser environment.
-    // Specifically not if we're in a web worker, or react-native.
-    if (_platform_index_js__WEBPACK_IMPORTED_MODULE_3__["default"].isStandardBrowserEnv) {
-      // Add xsrf header
-      const xsrfValue = (config.withCredentials || (0,_helpers_isURLSameOrigin_js__WEBPACK_IMPORTED_MODULE_9__["default"])(fullPath)) && config.xsrfCookieName && _helpers_cookies_js__WEBPACK_IMPORTED_MODULE_10__["default"].read(config.xsrfCookieName);
-      if (xsrfValue) {
-        requestHeaders.set(config.xsrfHeaderName, xsrfValue);
-      }
-    }
-
-    // Remove Content-Type if data is undefined
-    requestData === undefined && requestHeaders.setContentType(null);
-
-    // Add headers to the request
-    if ('setRequestHeader' in request) {
-      _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].forEach(requestHeaders.toJSON(), function setRequestHeader(val, key) {
-        request.setRequestHeader(key, val);
-      });
-    }
-
-    // Add withCredentials to request if needed
-    if (!_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isUndefined(config.withCredentials)) {
-      request.withCredentials = !!config.withCredentials;
-    }
-
-    // Add responseType to request if needed
-    if (responseType && responseType !== 'json') {
-      request.responseType = config.responseType;
-    }
-
-    // Handle progress if needed
-    if (typeof config.onDownloadProgress === 'function') {
-      request.addEventListener('progress', progressEventReducer(config.onDownloadProgress, true));
-    }
-
-    // Not all browsers support upload events
-    if (typeof config.onUploadProgress === 'function' && request.upload) {
-      request.upload.addEventListener('progress', progressEventReducer(config.onUploadProgress));
-    }
-    if (config.cancelToken || config.signal) {
-      // Handle cancellation
-      // eslint-disable-next-line func-names
-      onCanceled = cancel => {
-        if (!request) {
-          return;
-        }
-        reject(!cancel || cancel.type ? new _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_11__["default"](null, config, request) : cancel);
-        request.abort();
-        request = null;
-      };
-      config.cancelToken && config.cancelToken.subscribe(onCanceled);
-      if (config.signal) {
-        config.signal.aborted ? onCanceled() : config.signal.addEventListener('abort', onCanceled);
-      }
-    }
-    const protocol = (0,_helpers_parseProtocol_js__WEBPACK_IMPORTED_MODULE_12__["default"])(fullPath);
-    if (protocol && _platform_index_js__WEBPACK_IMPORTED_MODULE_3__["default"].protocols.indexOf(protocol) === -1) {
-      reject(new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"]('Unsupported protocol ' + protocol + ':', _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_7__["default"].ERR_BAD_REQUEST, config));
-      return;
-    }
-
-    // Send the request
-    request.send(requestData || null);
-  });
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/axios.js":
-/*!*****************************************!*\
-  !*** ./node_modules/axios/lib/axios.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _helpers_bind_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./helpers/bind.js */ "./node_modules/axios/lib/helpers/bind.js");
-/* harmony import */ var _core_Axios_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./core/Axios.js */ "./node_modules/axios/lib/core/Axios.js");
-/* harmony import */ var _core_mergeConfig_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./core/mergeConfig.js */ "./node_modules/axios/lib/core/mergeConfig.js");
-/* harmony import */ var _defaults_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./defaults/index.js */ "./node_modules/axios/lib/defaults/index.js");
-/* harmony import */ var _helpers_formDataToJSON_js__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./helpers/formDataToJSON.js */ "./node_modules/axios/lib/helpers/formDataToJSON.js");
-/* harmony import */ var _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./cancel/CanceledError.js */ "./node_modules/axios/lib/cancel/CanceledError.js");
-/* harmony import */ var _cancel_CancelToken_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./cancel/CancelToken.js */ "./node_modules/axios/lib/cancel/CancelToken.js");
-/* harmony import */ var _cancel_isCancel_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./cancel/isCancel.js */ "./node_modules/axios/lib/cancel/isCancel.js");
-/* harmony import */ var _env_data_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./env/data.js */ "./node_modules/axios/lib/env/data.js");
-/* harmony import */ var _helpers_toFormData_js__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./helpers/toFormData.js */ "./node_modules/axios/lib/helpers/toFormData.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _helpers_spread_js__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./helpers/spread.js */ "./node_modules/axios/lib/helpers/spread.js");
-/* harmony import */ var _helpers_isAxiosError_js__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./helpers/isAxiosError.js */ "./node_modules/axios/lib/helpers/isAxiosError.js");
-/* harmony import */ var _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./core/AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-/* harmony import */ var _helpers_HttpStatusCode_js__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./helpers/HttpStatusCode.js */ "./node_modules/axios/lib/helpers/HttpStatusCode.js");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/**
- * Create an instance of Axios
- *
- * @param {Object} defaultConfig The default config for the instance
- *
- * @returns {Axios} A new instance of Axios
- */
-function createInstance(defaultConfig) {
-  const context = new _core_Axios_js__WEBPACK_IMPORTED_MODULE_0__["default"](defaultConfig);
-  const instance = (0,_helpers_bind_js__WEBPACK_IMPORTED_MODULE_1__["default"])(_core_Axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].prototype.request, context);
-
-  // Copy axios.prototype to instance
-  _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].extend(instance, _core_Axios_js__WEBPACK_IMPORTED_MODULE_0__["default"].prototype, context, {
-    allOwnKeys: true
-  });
-
-  // Copy context to instance
-  _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].extend(instance, context, null, {
-    allOwnKeys: true
-  });
-
-  // Factory for creating new instances
-  instance.create = function create(instanceConfig) {
-    return createInstance((0,_core_mergeConfig_js__WEBPACK_IMPORTED_MODULE_3__["default"])(defaultConfig, instanceConfig));
-  };
-  return instance;
-}
-
-// Create the default instance to be exported
-const axios = createInstance(_defaults_index_js__WEBPACK_IMPORTED_MODULE_4__["default"]);
-
-// Expose Axios class to allow class inheritance
-axios.Axios = _core_Axios_js__WEBPACK_IMPORTED_MODULE_0__["default"];
-
-// Expose Cancel & CancelToken
-axios.CanceledError = _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_5__["default"];
-axios.CancelToken = _cancel_CancelToken_js__WEBPACK_IMPORTED_MODULE_6__["default"];
-axios.isCancel = _cancel_isCancel_js__WEBPACK_IMPORTED_MODULE_7__["default"];
-axios.VERSION = _env_data_js__WEBPACK_IMPORTED_MODULE_8__.VERSION;
-axios.toFormData = _helpers_toFormData_js__WEBPACK_IMPORTED_MODULE_9__["default"];
-
-// Expose AxiosError class
-axios.AxiosError = _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_10__["default"];
-
-// alias for CanceledError for backward compatibility
-axios.Cancel = axios.CanceledError;
-
-// Expose all/spread
-axios.all = function all(promises) {
-  return Promise.all(promises);
-};
-axios.spread = _helpers_spread_js__WEBPACK_IMPORTED_MODULE_11__["default"];
-
-// Expose isAxiosError
-axios.isAxiosError = _helpers_isAxiosError_js__WEBPACK_IMPORTED_MODULE_12__["default"];
-
-// Expose mergeConfig
-axios.mergeConfig = _core_mergeConfig_js__WEBPACK_IMPORTED_MODULE_3__["default"];
-axios.AxiosHeaders = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_13__["default"];
-axios.formToJSON = thing => (0,_helpers_formDataToJSON_js__WEBPACK_IMPORTED_MODULE_14__["default"])(_utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isHTMLForm(thing) ? new FormData(thing) : thing);
-axios.HttpStatusCode = _helpers_HttpStatusCode_js__WEBPACK_IMPORTED_MODULE_15__["default"];
-axios.default = axios;
-
-// this module should only have a default export
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (axios);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/cancel/CancelToken.js":
-/*!******************************************************!*\
-  !*** ./node_modules/axios/lib/cancel/CancelToken.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _CanceledError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CanceledError.js */ "./node_modules/axios/lib/cancel/CanceledError.js");
-
-
-
-
-/**
- * A `CancelToken` is an object that can be used to request cancellation of an operation.
- *
- * @param {Function} executor The executor function.
- *
- * @returns {CancelToken}
- */
-class CancelToken {
-  constructor(executor) {
-    if (typeof executor !== 'function') {
-      throw new TypeError('executor must be a function.');
-    }
-    let resolvePromise;
-    this.promise = new Promise(function promiseExecutor(resolve) {
-      resolvePromise = resolve;
-    });
-    const token = this;
-
-    // eslint-disable-next-line func-names
-    this.promise.then(cancel => {
-      if (!token._listeners) return;
-      let i = token._listeners.length;
-      while (i-- > 0) {
-        token._listeners[i](cancel);
-      }
-      token._listeners = null;
-    });
-
-    // eslint-disable-next-line func-names
-    this.promise.then = onfulfilled => {
-      let _resolve;
-      // eslint-disable-next-line func-names
-      const promise = new Promise(resolve => {
-        token.subscribe(resolve);
-        _resolve = resolve;
-      }).then(onfulfilled);
-      promise.cancel = function reject() {
-        token.unsubscribe(_resolve);
-      };
-      return promise;
-    };
-    executor(function cancel(message, config, request) {
-      if (token.reason) {
-        // Cancellation has already been requested
-        return;
-      }
-      token.reason = new _CanceledError_js__WEBPACK_IMPORTED_MODULE_0__["default"](message, config, request);
-      resolvePromise(token.reason);
-    });
-  }
-
-  /**
-   * Throws a `CanceledError` if cancellation has been requested.
-   */
-  throwIfRequested() {
-    if (this.reason) {
-      throw this.reason;
-    }
-  }
-
-  /**
-   * Subscribe to the cancel signal
-   */
-
-  subscribe(listener) {
-    if (this.reason) {
-      listener(this.reason);
-      return;
-    }
-    if (this._listeners) {
-      this._listeners.push(listener);
-    } else {
-      this._listeners = [listener];
-    }
-  }
-
-  /**
-   * Unsubscribe from the cancel signal
-   */
-
-  unsubscribe(listener) {
-    if (!this._listeners) {
-      return;
-    }
-    const index = this._listeners.indexOf(listener);
-    if (index !== -1) {
-      this._listeners.splice(index, 1);
-    }
-  }
-
-  /**
-   * Returns an object that contains a new `CancelToken` and a function that, when called,
-   * cancels the `CancelToken`.
-   */
-  static source() {
-    let cancel;
-    const token = new CancelToken(function executor(c) {
-      cancel = c;
-    });
-    return {
-      token,
-      cancel
-    };
-  }
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CancelToken);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/cancel/CanceledError.js":
-/*!********************************************************!*\
-  !*** ./node_modules/axios/lib/cancel/CanceledError.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-
-
-/**
- * A `CanceledError` is an object that is thrown when an operation is canceled.
- *
- * @param {string=} message The message.
- * @param {Object=} config The config.
- * @param {Object=} request The request.
- *
- * @returns {CanceledError} The created error.
- */
-function CanceledError(message, config, request) {
-  // eslint-disable-next-line no-eq-null,eqeqeq
-  _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"].call(this, message == null ? 'canceled' : message, _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERR_CANCELED, config, request);
-  this.name = 'CanceledError';
-}
-_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].inherits(CanceledError, _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"], {
-  __CANCEL__: true
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (CanceledError);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/cancel/isCancel.js":
-/*!***************************************************!*\
-  !*** ./node_modules/axios/lib/cancel/isCancel.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ isCancel)
-/* harmony export */ });
-
-
-function isCancel(value) {
-  return !!(value && value.__CANCEL__);
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/Axios.js":
-/*!**********************************************!*\
-  !*** ./node_modules/axios/lib/core/Axios.js ***!
-  \**********************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _helpers_buildURL_js__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../helpers/buildURL.js */ "./node_modules/axios/lib/helpers/buildURL.js");
-/* harmony import */ var _InterceptorManager_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InterceptorManager.js */ "./node_modules/axios/lib/core/InterceptorManager.js");
-/* harmony import */ var _dispatchRequest_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./dispatchRequest.js */ "./node_modules/axios/lib/core/dispatchRequest.js");
-/* harmony import */ var _mergeConfig_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./mergeConfig.js */ "./node_modules/axios/lib/core/mergeConfig.js");
-/* harmony import */ var _buildFullPath_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./buildFullPath.js */ "./node_modules/axios/lib/core/buildFullPath.js");
-/* harmony import */ var _helpers_validator_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/validator.js */ "./node_modules/axios/lib/helpers/validator.js");
-/* harmony import */ var _AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-
-
-
-
-
-
-
-
-
-
-const validators = _helpers_validator_js__WEBPACK_IMPORTED_MODULE_0__["default"].validators;
-
-/**
- * Create a new instance of Axios
- *
- * @param {Object} instanceConfig The default config for the instance
- *
- * @return {Axios} A new instance of Axios
- */
-class Axios {
-  constructor(instanceConfig) {
-    this.defaults = instanceConfig;
-    this.interceptors = {
-      request: new _InterceptorManager_js__WEBPACK_IMPORTED_MODULE_1__["default"](),
-      response: new _InterceptorManager_js__WEBPACK_IMPORTED_MODULE_1__["default"]()
-    };
-  }
-
-  /**
-   * Dispatch a request
-   *
-   * @param {String|Object} configOrUrl The config specific for this request (merged with this.defaults)
-   * @param {?Object} config
-   *
-   * @returns {Promise} The Promise to be fulfilled
-   */
-  request(configOrUrl, config) {
-    /*eslint no-param-reassign:0*/
-    // Allow for axios('example/url'[, config]) a la fetch API
-    if (typeof configOrUrl === 'string') {
-      config = config || {};
-      config.url = configOrUrl;
-    } else {
-      config = configOrUrl || {};
-    }
-    config = (0,_mergeConfig_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.defaults, config);
-    const {
-      transitional,
-      paramsSerializer,
-      headers
-    } = config;
-    if (transitional !== undefined) {
-      _helpers_validator_js__WEBPACK_IMPORTED_MODULE_0__["default"].assertOptions(transitional, {
-        silentJSONParsing: validators.transitional(validators.boolean),
-        forcedJSONParsing: validators.transitional(validators.boolean),
-        clarifyTimeoutError: validators.transitional(validators.boolean)
-      }, false);
-    }
-    if (paramsSerializer != null) {
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_3__["default"].isFunction(paramsSerializer)) {
-        config.paramsSerializer = {
-          serialize: paramsSerializer
-        };
-      } else {
-        _helpers_validator_js__WEBPACK_IMPORTED_MODULE_0__["default"].assertOptions(paramsSerializer, {
-          encode: validators.function,
-          serialize: validators.function
-        }, true);
-      }
-    }
-
-    // Set config.method
-    config.method = (config.method || this.defaults.method || 'get').toLowerCase();
-    let contextHeaders;
-
-    // Flatten headers
-    contextHeaders = headers && _utils_js__WEBPACK_IMPORTED_MODULE_3__["default"].merge(headers.common, headers[config.method]);
-    contextHeaders && _utils_js__WEBPACK_IMPORTED_MODULE_3__["default"].forEach(['delete', 'get', 'head', 'post', 'put', 'patch', 'common'], method => {
-      delete headers[method];
-    });
-    config.headers = _AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_4__["default"].concat(contextHeaders, headers);
-
-    // filter out skipped interceptors
-    const requestInterceptorChain = [];
-    let synchronousRequestInterceptors = true;
-    this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-      if (typeof interceptor.runWhen === 'function' && interceptor.runWhen(config) === false) {
-        return;
-      }
-      synchronousRequestInterceptors = synchronousRequestInterceptors && interceptor.synchronous;
-      requestInterceptorChain.unshift(interceptor.fulfilled, interceptor.rejected);
-    });
-    const responseInterceptorChain = [];
-    this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-      responseInterceptorChain.push(interceptor.fulfilled, interceptor.rejected);
-    });
-    let promise;
-    let i = 0;
-    let len;
-    if (!synchronousRequestInterceptors) {
-      const chain = [_dispatchRequest_js__WEBPACK_IMPORTED_MODULE_5__["default"].bind(this), undefined];
-      chain.unshift.apply(chain, requestInterceptorChain);
-      chain.push.apply(chain, responseInterceptorChain);
-      len = chain.length;
-      promise = Promise.resolve(config);
-      while (i < len) {
-        promise = promise.then(chain[i++], chain[i++]);
-      }
-      return promise;
-    }
-    len = requestInterceptorChain.length;
-    let newConfig = config;
-    i = 0;
-    while (i < len) {
-      const onFulfilled = requestInterceptorChain[i++];
-      const onRejected = requestInterceptorChain[i++];
-      try {
-        newConfig = onFulfilled(newConfig);
-      } catch (error) {
-        onRejected.call(this, error);
-        break;
-      }
-    }
-    try {
-      promise = _dispatchRequest_js__WEBPACK_IMPORTED_MODULE_5__["default"].call(this, newConfig);
-    } catch (error) {
-      return Promise.reject(error);
-    }
-    i = 0;
-    len = responseInterceptorChain.length;
-    while (i < len) {
-      promise = promise.then(responseInterceptorChain[i++], responseInterceptorChain[i++]);
-    }
-    return promise;
-  }
-  getUri(config) {
-    config = (0,_mergeConfig_js__WEBPACK_IMPORTED_MODULE_2__["default"])(this.defaults, config);
-    const fullPath = (0,_buildFullPath_js__WEBPACK_IMPORTED_MODULE_6__["default"])(config.baseURL, config.url);
-    return (0,_helpers_buildURL_js__WEBPACK_IMPORTED_MODULE_7__["default"])(fullPath, config.params, config.paramsSerializer);
-  }
-}
-
-// Provide aliases for supported request methods
-_utils_js__WEBPACK_IMPORTED_MODULE_3__["default"].forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-  /*eslint func-names:0*/
-  Axios.prototype[method] = function (url, config) {
-    return this.request((0,_mergeConfig_js__WEBPACK_IMPORTED_MODULE_2__["default"])(config || {}, {
-      method,
-      url,
-      data: (config || {}).data
-    }));
-  };
-});
-_utils_js__WEBPACK_IMPORTED_MODULE_3__["default"].forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  /*eslint func-names:0*/
-
-  function generateHTTPMethod(isForm) {
-    return function httpMethod(url, data, config) {
-      return this.request((0,_mergeConfig_js__WEBPACK_IMPORTED_MODULE_2__["default"])(config || {}, {
-        method,
-        headers: isForm ? {
-          'Content-Type': 'multipart/form-data'
-        } : {},
-        url,
-        data
-      }));
-    };
-  }
-  Axios.prototype[method] = generateHTTPMethod();
-  Axios.prototype[method + 'Form'] = generateHTTPMethod(true);
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Axios);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/AxiosError.js":
-/*!***************************************************!*\
-  !*** ./node_modules/axios/lib/core/AxiosError.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-
-/**
- * Create an Error with the specified message, config, error code, request and response.
- *
- * @param {string} message The error message.
- * @param {string} [code] The error code (for example, 'ECONNABORTED').
- * @param {Object} [config] The config.
- * @param {Object} [request] The request.
- * @param {Object} [response] The response.
- *
- * @returns {Error} The created error.
- */
-function AxiosError(message, code, config, request, response) {
-  Error.call(this);
-  if (Error.captureStackTrace) {
-    Error.captureStackTrace(this, this.constructor);
-  } else {
-    this.stack = new Error().stack;
-  }
-  this.message = message;
-  this.name = 'AxiosError';
-  code && (this.code = code);
-  config && (this.config = config);
-  request && (this.request = request);
-  response && (this.response = response);
-}
-_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].inherits(AxiosError, Error, {
-  toJSON: function toJSON() {
-    return {
-      // Standard
-      message: this.message,
-      name: this.name,
-      // Microsoft
-      description: this.description,
-      number: this.number,
-      // Mozilla
-      fileName: this.fileName,
-      lineNumber: this.lineNumber,
-      columnNumber: this.columnNumber,
-      stack: this.stack,
-      // Axios
-      config: _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toJSONObject(this.config),
-      code: this.code,
-      status: this.response && this.response.status ? this.response.status : null
-    };
-  }
-});
-const prototype = AxiosError.prototype;
-const descriptors = {};
-['ERR_BAD_OPTION_VALUE', 'ERR_BAD_OPTION', 'ECONNABORTED', 'ETIMEDOUT', 'ERR_NETWORK', 'ERR_FR_TOO_MANY_REDIRECTS', 'ERR_DEPRECATED', 'ERR_BAD_RESPONSE', 'ERR_BAD_REQUEST', 'ERR_CANCELED', 'ERR_NOT_SUPPORT', 'ERR_INVALID_URL'
-// eslint-disable-next-line func-names
-].forEach(code => {
-  descriptors[code] = {
-    value: code
-  };
-});
-Object.defineProperties(AxiosError, descriptors);
-Object.defineProperty(prototype, 'isAxiosError', {
-  value: true
-});
-
-// eslint-disable-next-line func-names
-AxiosError.from = (error, code, config, request, response, customProps) => {
-  const axiosError = Object.create(prototype);
-  _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toFlatObject(error, axiosError, function filter(obj) {
-    return obj !== Error.prototype;
-  }, prop => {
-    return prop !== 'isAxiosError';
-  });
-  AxiosError.call(axiosError, error.message, code, config, request, response);
-  axiosError.cause = error;
-  axiosError.name = error.name;
-  customProps && Object.assign(axiosError, customProps);
-  return axiosError;
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AxiosError);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/AxiosHeaders.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/axios/lib/core/AxiosHeaders.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _helpers_parseHeaders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helpers/parseHeaders.js */ "./node_modules/axios/lib/helpers/parseHeaders.js");
-
-
-
-
-const $internals = Symbol('internals');
-function normalizeHeader(header) {
-  return header && String(header).trim().toLowerCase();
-}
-function normalizeValue(value) {
-  if (value === false || value == null) {
-    return value;
-  }
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(value) ? value.map(normalizeValue) : String(value);
-}
-function parseTokens(str) {
-  const tokens = Object.create(null);
-  const tokensRE = /([^\s,;=]+)\s*(?:=\s*([^,;]+))?/g;
-  let match;
-  while (match = tokensRE.exec(str)) {
-    tokens[match[1]] = match[2];
-  }
-  return tokens;
-}
-const isValidHeaderName = str => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
-function matchHeaderValue(context, value, header, filter, isHeaderNameFilter) {
-  if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(filter)) {
-    return filter.call(this, value, header);
-  }
-  if (isHeaderNameFilter) {
-    value = header;
-  }
-  if (!_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(value)) return;
-  if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(filter)) {
-    return value.indexOf(filter) !== -1;
-  }
-  if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isRegExp(filter)) {
-    return filter.test(value);
-  }
-}
-function formatHeader(header) {
-  return header.trim().toLowerCase().replace(/([a-z\d])(\w*)/g, (w, char, str) => {
-    return char.toUpperCase() + str;
-  });
-}
-function buildAccessors(obj, header) {
-  const accessorName = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toCamelCase(' ' + header);
-  ['get', 'set', 'has'].forEach(methodName => {
-    Object.defineProperty(obj, methodName + accessorName, {
-      value: function (arg1, arg2, arg3) {
-        return this[methodName].call(this, header, arg1, arg2, arg3);
-      },
-      configurable: true
-    });
-  });
-}
-class AxiosHeaders {
-  constructor(headers) {
-    headers && this.set(headers);
-  }
-  set(header, valueOrRewrite, rewrite) {
-    const self = this;
-    function setHeader(_value, _header, _rewrite) {
-      const lHeader = normalizeHeader(_header);
-      if (!lHeader) {
-        throw new Error('header name must be a non-empty string');
-      }
-      const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(self, lHeader);
-      if (!key || self[key] === undefined || _rewrite === true || _rewrite === undefined && self[key] !== false) {
-        self[key || _header] = normalizeValue(_value);
-      }
-    }
-    const setHeaders = (headers, _rewrite) => _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(headers, (_value, _header) => setHeader(_value, _header, _rewrite));
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isPlainObject(header) || header instanceof this.constructor) {
-      setHeaders(header, valueOrRewrite);
-    } else if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(header) && (header = header.trim()) && !isValidHeaderName(header)) {
-      setHeaders((0,_helpers_parseHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"])(header), valueOrRewrite);
-    } else {
-      header != null && setHeader(valueOrRewrite, header, rewrite);
-    }
-    return this;
-  }
-  get(header, parser) {
-    header = normalizeHeader(header);
-    if (header) {
-      const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(this, header);
-      if (key) {
-        const value = this[key];
-        if (!parser) {
-          return value;
-        }
-        if (parser === true) {
-          return parseTokens(value);
-        }
-        if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(parser)) {
-          return parser.call(this, value, key);
-        }
-        if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isRegExp(parser)) {
-          return parser.exec(value);
-        }
-        throw new TypeError('parser must be boolean|regexp|function');
-      }
-    }
-  }
-  has(header, matcher) {
-    header = normalizeHeader(header);
-    if (header) {
-      const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(this, header);
-      return !!(key && this[key] !== undefined && (!matcher || matchHeaderValue(this, this[key], key, matcher)));
-    }
-    return false;
-  }
-  delete(header, matcher) {
-    const self = this;
-    let deleted = false;
-    function deleteHeader(_header) {
-      _header = normalizeHeader(_header);
-      if (_header) {
-        const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(self, _header);
-        if (key && (!matcher || matchHeaderValue(self, self[key], key, matcher))) {
-          delete self[key];
-          deleted = true;
-        }
-      }
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(header)) {
-      header.forEach(deleteHeader);
-    } else {
-      deleteHeader(header);
-    }
-    return deleted;
-  }
-  clear(matcher) {
-    const keys = Object.keys(this);
-    let i = keys.length;
-    let deleted = false;
-    while (i--) {
-      const key = keys[i];
-      if (!matcher || matchHeaderValue(this, this[key], key, matcher, true)) {
-        delete this[key];
-        deleted = true;
-      }
-    }
-    return deleted;
-  }
-  normalize(format) {
-    const self = this;
-    const headers = {};
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(this, (value, header) => {
-      const key = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].findKey(headers, header);
-      if (key) {
-        self[key] = normalizeValue(value);
-        delete self[header];
-        return;
-      }
-      const normalized = format ? formatHeader(header) : String(header).trim();
-      if (normalized !== header) {
-        delete self[header];
-      }
-      self[normalized] = normalizeValue(value);
-      headers[normalized] = true;
-    });
-    return this;
-  }
-  concat(...targets) {
-    return this.constructor.concat(this, ...targets);
-  }
-  toJSON(asStrings) {
-    const obj = Object.create(null);
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(this, (value, header) => {
-      value != null && value !== false && (obj[header] = asStrings && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(value) ? value.join(', ') : value);
-    });
-    return obj;
-  }
-  [Symbol.iterator]() {
-    return Object.entries(this.toJSON())[Symbol.iterator]();
-  }
-  toString() {
-    return Object.entries(this.toJSON()).map(([header, value]) => header + ': ' + value).join('\n');
-  }
-  get [Symbol.toStringTag]() {
-    return 'AxiosHeaders';
-  }
-  static from(thing) {
-    return thing instanceof this ? thing : new this(thing);
-  }
-  static concat(first, ...targets) {
-    const computed = new this(first);
-    targets.forEach(target => computed.set(target));
-    return computed;
-  }
-  static accessor(header) {
-    const internals = this[$internals] = this[$internals] = {
-      accessors: {}
-    };
-    const accessors = internals.accessors;
-    const prototype = this.prototype;
-    function defineAccessor(_header) {
-      const lHeader = normalizeHeader(_header);
-      if (!accessors[lHeader]) {
-        buildAccessors(prototype, _header);
-        accessors[lHeader] = true;
-      }
-    }
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(header) ? header.forEach(defineAccessor) : defineAccessor(header);
-    return this;
-  }
-}
-AxiosHeaders.accessor(['Content-Type', 'Content-Length', 'Accept', 'Accept-Encoding', 'User-Agent', 'Authorization']);
-_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].freezeMethods(AxiosHeaders.prototype);
-_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].freezeMethods(AxiosHeaders);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AxiosHeaders);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/InterceptorManager.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/axios/lib/core/InterceptorManager.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-class InterceptorManager {
-  constructor() {
-    this.handlers = [];
-  }
-
-  /**
-   * Add a new interceptor to the stack
-   *
-   * @param {Function} fulfilled The function to handle `then` for a `Promise`
-   * @param {Function} rejected The function to handle `reject` for a `Promise`
-   *
-   * @return {Number} An ID used to remove interceptor later
-   */
-  use(fulfilled, rejected, options) {
-    this.handlers.push({
-      fulfilled,
-      rejected,
-      synchronous: options ? options.synchronous : false,
-      runWhen: options ? options.runWhen : null
-    });
-    return this.handlers.length - 1;
-  }
-
-  /**
-   * Remove an interceptor from the stack
-   *
-   * @param {Number} id The ID that was returned by `use`
-   *
-   * @returns {Boolean} `true` if the interceptor was removed, `false` otherwise
-   */
-  eject(id) {
-    if (this.handlers[id]) {
-      this.handlers[id] = null;
-    }
-  }
-
-  /**
-   * Clear all interceptors from the stack
-   *
-   * @returns {void}
-   */
-  clear() {
-    if (this.handlers) {
-      this.handlers = [];
-    }
-  }
-
-  /**
-   * Iterate over all the registered interceptors
-   *
-   * This method is particularly useful for skipping over any
-   * interceptors that may have become `null` calling `eject`.
-   *
-   * @param {Function} fn The function to call for each interceptor
-   *
-   * @returns {void}
-   */
-  forEach(fn) {
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(this.handlers, function forEachHandler(h) {
-      if (h !== null) {
-        fn(h);
-      }
-    });
-  }
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (InterceptorManager);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/buildFullPath.js":
-/*!******************************************************!*\
-  !*** ./node_modules/axios/lib/core/buildFullPath.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ buildFullPath)
-/* harmony export */ });
-/* harmony import */ var _helpers_isAbsoluteURL_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../helpers/isAbsoluteURL.js */ "./node_modules/axios/lib/helpers/isAbsoluteURL.js");
-/* harmony import */ var _helpers_combineURLs_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helpers/combineURLs.js */ "./node_modules/axios/lib/helpers/combineURLs.js");
-
-
-
-
-
-/**
- * Creates a new URL by combining the baseURL with the requestedURL,
- * only when the requestedURL is not already an absolute URL.
- * If the requestURL is absolute, this function returns the requestedURL untouched.
- *
- * @param {string} baseURL The base URL
- * @param {string} requestedURL Absolute or relative URL to combine
- *
- * @returns {string} The combined full path
- */
-function buildFullPath(baseURL, requestedURL) {
-  if (baseURL && !(0,_helpers_isAbsoluteURL_js__WEBPACK_IMPORTED_MODULE_0__["default"])(requestedURL)) {
-    return (0,_helpers_combineURLs_js__WEBPACK_IMPORTED_MODULE_1__["default"])(baseURL, requestedURL);
-  }
-  return requestedURL;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/dispatchRequest.js":
-/*!********************************************************!*\
-  !*** ./node_modules/axios/lib/core/dispatchRequest.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ dispatchRequest)
-/* harmony export */ });
-/* harmony import */ var _transformData_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./transformData.js */ "./node_modules/axios/lib/core/transformData.js");
-/* harmony import */ var _cancel_isCancel_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../cancel/isCancel.js */ "./node_modules/axios/lib/cancel/isCancel.js");
-/* harmony import */ var _defaults_index_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../defaults/index.js */ "./node_modules/axios/lib/defaults/index.js");
-/* harmony import */ var _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../cancel/CanceledError.js */ "./node_modules/axios/lib/cancel/CanceledError.js");
-/* harmony import */ var _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-/* harmony import */ var _adapters_adapters_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../adapters/adapters.js */ "./node_modules/axios/lib/adapters/adapters.js");
-
-
-
-
-
-
-
-
-
-/**
- * Throws a `CanceledError` if cancellation has been requested.
- *
- * @param {Object} config The config that is to be used for the request
- *
- * @returns {void}
- */
-function throwIfCancellationRequested(config) {
-  if (config.cancelToken) {
-    config.cancelToken.throwIfRequested();
-  }
-  if (config.signal && config.signal.aborted) {
-    throw new _cancel_CanceledError_js__WEBPACK_IMPORTED_MODULE_0__["default"](null, config);
-  }
-}
-
-/**
- * Dispatch a request to the server using the configured adapter.
- *
- * @param {object} config The config that is to be used for the request
- *
- * @returns {Promise} The Promise to be fulfilled
- */
-function dispatchRequest(config) {
-  throwIfCancellationRequested(config);
-  config.headers = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from(config.headers);
-
-  // Transform request data
-  config.data = _transformData_js__WEBPACK_IMPORTED_MODULE_2__["default"].call(config, config.transformRequest);
-  if (['post', 'put', 'patch'].indexOf(config.method) !== -1) {
-    config.headers.setContentType('application/x-www-form-urlencoded', false);
-  }
-  const adapter = _adapters_adapters_js__WEBPACK_IMPORTED_MODULE_3__["default"].getAdapter(config.adapter || _defaults_index_js__WEBPACK_IMPORTED_MODULE_4__["default"].adapter);
-  return adapter(config).then(function onAdapterResolution(response) {
-    throwIfCancellationRequested(config);
-
-    // Transform response data
-    response.data = _transformData_js__WEBPACK_IMPORTED_MODULE_2__["default"].call(config, config.transformResponse, response);
-    response.headers = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from(response.headers);
-    return response;
-  }, function onAdapterRejection(reason) {
-    if (!(0,_cancel_isCancel_js__WEBPACK_IMPORTED_MODULE_5__["default"])(reason)) {
-      throwIfCancellationRequested(config);
-
-      // Transform response data
-      if (reason && reason.response) {
-        reason.response.data = _transformData_js__WEBPACK_IMPORTED_MODULE_2__["default"].call(config, config.transformResponse, reason.response);
-        reason.response.headers = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from(reason.response.headers);
-      }
-    }
-    return Promise.reject(reason);
-  });
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/mergeConfig.js":
-/*!****************************************************!*\
-  !*** ./node_modules/axios/lib/core/mergeConfig.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ mergeConfig)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-
-
-
-
-const headersToObject = thing => thing instanceof _AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_0__["default"] ? thing.toJSON() : thing;
-
-/**
- * Config-specific merge-function which creates a new config-object
- * by merging two configuration objects together.
- *
- * @param {Object} config1
- * @param {Object} config2
- *
- * @returns {Object} New object resulting from merging config2 to config1
- */
-function mergeConfig(config1, config2) {
-  // eslint-disable-next-line no-param-reassign
-  config2 = config2 || {};
-  const config = {};
-  function getMergedValue(target, source, caseless) {
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isPlainObject(target) && _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isPlainObject(source)) {
-      return _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].merge.call({
-        caseless
-      }, target, source);
-    } else if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isPlainObject(source)) {
-      return _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].merge({}, source);
-    } else if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isArray(source)) {
-      return source.slice();
-    }
-    return source;
-  }
-
-  // eslint-disable-next-line consistent-return
-  function mergeDeepProperties(a, b, caseless) {
-    if (!_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(b)) {
-      return getMergedValue(a, b, caseless);
-    } else if (!_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(a)) {
-      return getMergedValue(undefined, a, caseless);
-    }
-  }
-
-  // eslint-disable-next-line consistent-return
-  function valueFromConfig2(a, b) {
-    if (!_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(b)) {
-      return getMergedValue(undefined, b);
-    }
-  }
-
-  // eslint-disable-next-line consistent-return
-  function defaultToConfig2(a, b) {
-    if (!_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(b)) {
-      return getMergedValue(undefined, b);
-    } else if (!_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(a)) {
-      return getMergedValue(undefined, a);
-    }
-  }
-
-  // eslint-disable-next-line consistent-return
-  function mergeDirectKeys(a, b, prop) {
-    if (prop in config2) {
-      return getMergedValue(a, b);
-    } else if (prop in config1) {
-      return getMergedValue(undefined, a);
-    }
-  }
-  const mergeMap = {
-    url: valueFromConfig2,
-    method: valueFromConfig2,
-    data: valueFromConfig2,
-    baseURL: defaultToConfig2,
-    transformRequest: defaultToConfig2,
-    transformResponse: defaultToConfig2,
-    paramsSerializer: defaultToConfig2,
-    timeout: defaultToConfig2,
-    timeoutMessage: defaultToConfig2,
-    withCredentials: defaultToConfig2,
-    adapter: defaultToConfig2,
-    responseType: defaultToConfig2,
-    xsrfCookieName: defaultToConfig2,
-    xsrfHeaderName: defaultToConfig2,
-    onUploadProgress: defaultToConfig2,
-    onDownloadProgress: defaultToConfig2,
-    decompress: defaultToConfig2,
-    maxContentLength: defaultToConfig2,
-    maxBodyLength: defaultToConfig2,
-    beforeRedirect: defaultToConfig2,
-    transport: defaultToConfig2,
-    httpAgent: defaultToConfig2,
-    httpsAgent: defaultToConfig2,
-    cancelToken: defaultToConfig2,
-    socketPath: defaultToConfig2,
-    responseEncoding: defaultToConfig2,
-    validateStatus: mergeDirectKeys,
-    headers: (a, b) => mergeDeepProperties(headersToObject(a), headersToObject(b), true)
-  };
-  _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].forEach(Object.keys(Object.assign({}, config1, config2)), function computeConfigValue(prop) {
-    const merge = mergeMap[prop] || mergeDeepProperties;
-    const configValue = merge(config1[prop], config2[prop], prop);
-    _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isUndefined(configValue) && merge !== mergeDirectKeys || (config[prop] = configValue);
-  });
-  return config;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/settle.js":
-/*!***********************************************!*\
-  !*** ./node_modules/axios/lib/core/settle.js ***!
-  \***********************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ settle)
-/* harmony export */ });
-/* harmony import */ var _AxiosError_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-
-
-
-
-/**
- * Resolve or reject a Promise based on response status.
- *
- * @param {Function} resolve A function that resolves the promise.
- * @param {Function} reject A function that rejects the promise.
- * @param {object} response The response.
- *
- * @returns {object} The response.
- */
-function settle(resolve, reject, response) {
-  const validateStatus = response.config.validateStatus;
-  if (!response.status || !validateStatus || validateStatus(response.status)) {
-    resolve(response);
-  } else {
-    reject(new _AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"]('Request failed with status code ' + response.status, [_AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERR_BAD_REQUEST, _AxiosError_js__WEBPACK_IMPORTED_MODULE_0__["default"].ERR_BAD_RESPONSE][Math.floor(response.status / 100) - 4], response.config, response.request, response));
-  }
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/core/transformData.js":
-/*!******************************************************!*\
-  !*** ./node_modules/axios/lib/core/transformData.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ transformData)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _defaults_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../defaults/index.js */ "./node_modules/axios/lib/defaults/index.js");
-/* harmony import */ var _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/AxiosHeaders.js */ "./node_modules/axios/lib/core/AxiosHeaders.js");
-
-
-
-
-
-
-/**
- * Transform the data for a request or a response
- *
- * @param {Array|Function} fns A single function or Array of functions
- * @param {?Object} response The response object
- *
- * @returns {*} The resulting transformed data
- */
-function transformData(fns, response) {
-  const config = this || _defaults_index_js__WEBPACK_IMPORTED_MODULE_0__["default"];
-  const context = response || config;
-  const headers = _core_AxiosHeaders_js__WEBPACK_IMPORTED_MODULE_1__["default"].from(context.headers);
-  let data = context.data;
-  _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].forEach(fns, function transform(fn) {
-    data = fn.call(config, data, headers.normalize(), response ? response.status : undefined);
-  });
-  headers.normalize();
-  return data;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/defaults/index.js":
-/*!**************************************************!*\
-  !*** ./node_modules/axios/lib/defaults/index.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _transitional_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./transitional.js */ "./node_modules/axios/lib/defaults/transitional.js");
-/* harmony import */ var _helpers_toFormData_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../helpers/toFormData.js */ "./node_modules/axios/lib/helpers/toFormData.js");
-/* harmony import */ var _helpers_toURLEncodedForm_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers/toURLEncodedForm.js */ "./node_modules/axios/lib/helpers/toURLEncodedForm.js");
-/* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../platform/index.js */ "./node_modules/axios/lib/platform/browser/index.js");
-/* harmony import */ var _helpers_formDataToJSON_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers/formDataToJSON.js */ "./node_modules/axios/lib/helpers/formDataToJSON.js");
-
-
-
-
-
-
-
-
-
-const DEFAULT_CONTENT_TYPE = {
-  'Content-Type': undefined
-};
-
-/**
- * It takes a string, tries to parse it, and if it fails, it returns the stringified version
- * of the input
- *
- * @param {any} rawValue - The value to be stringified.
- * @param {Function} parser - A function that parses a string into a JavaScript object.
- * @param {Function} encoder - A function that takes a value and returns a string.
- *
- * @returns {string} A stringified version of the rawValue.
- */
-function stringifySafely(rawValue, parser, encoder) {
-  if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(rawValue)) {
-    try {
-      (parser || JSON.parse)(rawValue);
-      return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].trim(rawValue);
-    } catch (e) {
-      if (e.name !== 'SyntaxError') {
-        throw e;
-      }
-    }
-  }
-  return (encoder || JSON.stringify)(rawValue);
-}
-const defaults = {
-  transitional: _transitional_js__WEBPACK_IMPORTED_MODULE_1__["default"],
-  adapter: ['xhr', 'http'],
-  transformRequest: [function transformRequest(data, headers) {
-    const contentType = headers.getContentType() || '';
-    const hasJSONContentType = contentType.indexOf('application/json') > -1;
-    const isObjectPayload = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isObject(data);
-    if (isObjectPayload && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isHTMLForm(data)) {
-      data = new FormData(data);
-    }
-    const isFormData = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFormData(data);
-    if (isFormData) {
-      if (!hasJSONContentType) {
-        return data;
-      }
-      return hasJSONContentType ? JSON.stringify((0,_helpers_formDataToJSON_js__WEBPACK_IMPORTED_MODULE_2__["default"])(data)) : data;
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArrayBuffer(data) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isBuffer(data) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isStream(data) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFile(data) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isBlob(data)) {
-      return data;
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isURLSearchParams(data)) {
-      headers.setContentType('application/x-www-form-urlencoded;charset=utf-8', false);
-      return data.toString();
-    }
-    let isFileList;
-    if (isObjectPayload) {
-      if (contentType.indexOf('application/x-www-form-urlencoded') > -1) {
-        return (0,_helpers_toURLEncodedForm_js__WEBPACK_IMPORTED_MODULE_3__["default"])(data, this.formSerializer).toString();
-      }
-      if ((isFileList = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFileList(data)) || contentType.indexOf('multipart/form-data') > -1) {
-        const _FormData = this.env && this.env.FormData;
-        return (0,_helpers_toFormData_js__WEBPACK_IMPORTED_MODULE_4__["default"])(isFileList ? {
-          'files[]': data
-        } : data, _FormData && new _FormData(), this.formSerializer);
-      }
-    }
-    if (isObjectPayload || hasJSONContentType) {
-      headers.setContentType('application/json', false);
-      return stringifySafely(data);
-    }
-    return data;
-  }],
-  transformResponse: [function transformResponse(data) {
-    const transitional = this.transitional || defaults.transitional;
-    const forcedJSONParsing = transitional && transitional.forcedJSONParsing;
-    const JSONRequested = this.responseType === 'json';
-    if (data && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(data) && (forcedJSONParsing && !this.responseType || JSONRequested)) {
-      const silentJSONParsing = transitional && transitional.silentJSONParsing;
-      const strictJSONParsing = !silentJSONParsing && JSONRequested;
-      try {
-        return JSON.parse(data);
-      } catch (e) {
-        if (strictJSONParsing) {
-          if (e.name === 'SyntaxError') {
-            throw _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_5__["default"].from(e, _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_5__["default"].ERR_BAD_RESPONSE, this, null, this.response);
-          }
-          throw e;
-        }
-      }
-    }
-    return data;
-  }],
-  /**
-   * A timeout in milliseconds to abort a request. If set to 0 (default) a
-   * timeout is not created.
-   */
-  timeout: 0,
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-  maxContentLength: -1,
-  maxBodyLength: -1,
-  env: {
-    FormData: _platform_index_js__WEBPACK_IMPORTED_MODULE_6__["default"].classes.FormData,
-    Blob: _platform_index_js__WEBPACK_IMPORTED_MODULE_6__["default"].classes.Blob
-  },
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  },
-  headers: {
-    common: {
-      'Accept': 'application/json, text/plain, */*'
-    }
-  }
-};
-_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].merge(DEFAULT_CONTENT_TYPE);
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (defaults);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/defaults/transitional.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/axios/lib/defaults/transitional.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  silentJSONParsing: true,
-  forcedJSONParsing: true,
-  clarifyTimeoutError: false
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/env/data.js":
-/*!********************************************!*\
-  !*** ./node_modules/axios/lib/env/data.js ***!
-  \********************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "VERSION": () => (/* binding */ VERSION)
-/* harmony export */ });
-const VERSION = "1.4.0";
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/AxiosURLSearchParams.js":
-/*!****************************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/AxiosURLSearchParams.js ***!
-  \****************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _toFormData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toFormData.js */ "./node_modules/axios/lib/helpers/toFormData.js");
-
-
-
-
-/**
- * It encodes a string by replacing all characters that are not in the unreserved set with
- * their percent-encoded equivalents
- *
- * @param {string} str - The string to encode.
- *
- * @returns {string} The encoded string.
- */
-function encode(str) {
-  const charMap = {
-    '!': '%21',
-    "'": '%27',
-    '(': '%28',
-    ')': '%29',
-    '~': '%7E',
-    '%20': '+',
-    '%00': '\x00'
-  };
-  return encodeURIComponent(str).replace(/[!'()~]|%20|%00/g, function replacer(match) {
-    return charMap[match];
-  });
-}
-
-/**
- * It takes a params object and converts it to a FormData object
- *
- * @param {Object<string, any>} params - The parameters to be converted to a FormData object.
- * @param {Object<string, any>} options - The options object passed to the Axios constructor.
- *
- * @returns {void}
- */
-function AxiosURLSearchParams(params, options) {
-  this._pairs = [];
-  params && (0,_toFormData_js__WEBPACK_IMPORTED_MODULE_0__["default"])(params, this, options);
-}
-const prototype = AxiosURLSearchParams.prototype;
-prototype.append = function append(name, value) {
-  this._pairs.push([name, value]);
-};
-prototype.toString = function toString(encoder) {
-  const _encode = encoder ? function (value) {
-    return encoder.call(this, value, encode);
-  } : encode;
-  return this._pairs.map(function each(pair) {
-    return _encode(pair[0]) + '=' + _encode(pair[1]);
-  }, '').join('&');
-};
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (AxiosURLSearchParams);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/HttpStatusCode.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/HttpStatusCode.js ***!
-  \**********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-const HttpStatusCode = {
-  Continue: 100,
-  SwitchingProtocols: 101,
-  Processing: 102,
-  EarlyHints: 103,
-  Ok: 200,
-  Created: 201,
-  Accepted: 202,
-  NonAuthoritativeInformation: 203,
-  NoContent: 204,
-  ResetContent: 205,
-  PartialContent: 206,
-  MultiStatus: 207,
-  AlreadyReported: 208,
-  ImUsed: 226,
-  MultipleChoices: 300,
-  MovedPermanently: 301,
-  Found: 302,
-  SeeOther: 303,
-  NotModified: 304,
-  UseProxy: 305,
-  Unused: 306,
-  TemporaryRedirect: 307,
-  PermanentRedirect: 308,
-  BadRequest: 400,
-  Unauthorized: 401,
-  PaymentRequired: 402,
-  Forbidden: 403,
-  NotFound: 404,
-  MethodNotAllowed: 405,
-  NotAcceptable: 406,
-  ProxyAuthenticationRequired: 407,
-  RequestTimeout: 408,
-  Conflict: 409,
-  Gone: 410,
-  LengthRequired: 411,
-  PreconditionFailed: 412,
-  PayloadTooLarge: 413,
-  UriTooLong: 414,
-  UnsupportedMediaType: 415,
-  RangeNotSatisfiable: 416,
-  ExpectationFailed: 417,
-  ImATeapot: 418,
-  MisdirectedRequest: 421,
-  UnprocessableEntity: 422,
-  Locked: 423,
-  FailedDependency: 424,
-  TooEarly: 425,
-  UpgradeRequired: 426,
-  PreconditionRequired: 428,
-  TooManyRequests: 429,
-  RequestHeaderFieldsTooLarge: 431,
-  UnavailableForLegalReasons: 451,
-  InternalServerError: 500,
-  NotImplemented: 501,
-  BadGateway: 502,
-  ServiceUnavailable: 503,
-  GatewayTimeout: 504,
-  HttpVersionNotSupported: 505,
-  VariantAlsoNegotiates: 506,
-  InsufficientStorage: 507,
-  LoopDetected: 508,
-  NotExtended: 510,
-  NetworkAuthenticationRequired: 511
-};
-Object.entries(HttpStatusCode).forEach(([key, value]) => {
-  HttpStatusCode[value] = key;
-});
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (HttpStatusCode);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/bind.js":
-/*!************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/bind.js ***!
-  \************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ bind)
-/* harmony export */ });
-
-
-function bind(fn, thisArg) {
-  return function wrap() {
-    return fn.apply(thisArg, arguments);
-  };
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/buildURL.js":
-/*!****************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/buildURL.js ***!
-  \****************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ buildURL)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _helpers_AxiosURLSearchParams_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../helpers/AxiosURLSearchParams.js */ "./node_modules/axios/lib/helpers/AxiosURLSearchParams.js");
-
-
-
-
-
-/**
- * It replaces all instances of the characters `:`, `$`, `,`, `+`, `[`, and `]` with their
- * URI encoded counterparts
- *
- * @param {string} val The value to be encoded.
- *
- * @returns {string} The encoded value.
- */
-function encode(val) {
-  return encodeURIComponent(val).replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
-}
-
-/**
- * Build a URL by appending params to the end
- *
- * @param {string} url The base of the url (e.g., http://www.google.com)
- * @param {object} [params] The params to be appended
- * @param {?object} options
- *
- * @returns {string} The formatted url
- */
-function buildURL(url, params, options) {
-  /*eslint no-param-reassign:0*/
-  if (!params) {
-    return url;
-  }
-  const _encode = options && options.encode || encode;
-  const serializeFn = options && options.serialize;
-  let serializedParams;
-  if (serializeFn) {
-    serializedParams = serializeFn(params, options);
-  } else {
-    serializedParams = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isURLSearchParams(params) ? params.toString() : new _helpers_AxiosURLSearchParams_js__WEBPACK_IMPORTED_MODULE_1__["default"](params, options).toString(_encode);
-  }
-  if (serializedParams) {
-    const hashmarkIndex = url.indexOf("#");
-    if (hashmarkIndex !== -1) {
-      url = url.slice(0, hashmarkIndex);
-    }
-    url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-  }
-  return url;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/combineURLs.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/combineURLs.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ combineURLs)
-/* harmony export */ });
-
-
-/**
- * Creates a new URL by combining the specified URLs
- *
- * @param {string} baseURL The base URL
- * @param {string} relativeURL The relative URL
- *
- * @returns {string} The combined URL
- */
-function combineURLs(baseURL, relativeURL) {
-  return relativeURL ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '') : baseURL;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/cookies.js":
-/*!***************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/cookies.js ***!
-  \***************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../platform/index.js */ "./node_modules/axios/lib/platform/browser/index.js");
-
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_platform_index_js__WEBPACK_IMPORTED_MODULE_0__["default"].isStandardBrowserEnv ?
-// Standard browser envs support document.cookie
-function standardBrowserEnv() {
-  return {
-    write: function write(name, value, expires, path, domain, secure) {
-      const cookie = [];
-      cookie.push(name + '=' + encodeURIComponent(value));
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isNumber(expires)) {
-        cookie.push('expires=' + new Date(expires).toGMTString());
-      }
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isString(path)) {
-        cookie.push('path=' + path);
-      }
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isString(domain)) {
-        cookie.push('domain=' + domain);
-      }
-      if (secure === true) {
-        cookie.push('secure');
-      }
-      document.cookie = cookie.join('; ');
-    },
-    read: function read(name) {
-      const match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-      return match ? decodeURIComponent(match[3]) : null;
-    },
-    remove: function remove(name) {
-      this.write(name, '', Date.now() - 86400000);
-    }
-  };
-}() :
-// Non standard browser env (web workers, react-native) lack needed support.
-function nonStandardBrowserEnv() {
-  return {
-    write: function write() {},
-    read: function read() {
-      return null;
-    },
-    remove: function remove() {}
-  };
-}());
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/formDataToJSON.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/formDataToJSON.js ***!
-  \**********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-
-/**
- * It takes a string like `foo[x][y][z]` and returns an array like `['foo', 'x', 'y', 'z']
- *
- * @param {string} name - The name of the property to get.
- *
- * @returns An array of strings.
- */
-function parsePropPath(name) {
-  // foo[x][y][z]
-  // foo.x.y.z
-  // foo-x-y-z
-  // foo x y z
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].matchAll(/\w+|\[(\w*)]/g, name).map(match => {
-    return match[0] === '[]' ? '' : match[1] || match[0];
-  });
-}
-
-/**
- * Convert an array to an object.
- *
- * @param {Array<any>} arr - The array to convert to an object.
- *
- * @returns An object with the same keys and values as the array.
- */
-function arrayToObject(arr) {
-  const obj = {};
-  const keys = Object.keys(arr);
-  let i;
-  const len = keys.length;
-  let key;
-  for (i = 0; i < len; i++) {
-    key = keys[i];
-    obj[key] = arr[key];
-  }
-  return obj;
-}
-
-/**
- * It takes a FormData object and returns a JavaScript object
- *
- * @param {string} formData The FormData object to convert to JSON.
- *
- * @returns {Object<string, any> | null} The converted object.
- */
-function formDataToJSON(formData) {
-  function buildPath(path, value, target, index) {
-    let name = path[index++];
-    const isNumericKey = Number.isFinite(+name);
-    const isLast = index >= path.length;
-    name = !name && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(target) ? target.length : name;
-    if (isLast) {
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].hasOwnProp(target, name)) {
-        target[name] = [target[name], value];
-      } else {
-        target[name] = value;
-      }
-      return !isNumericKey;
-    }
-    if (!target[name] || !_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isObject(target[name])) {
-      target[name] = [];
-    }
-    const result = buildPath(path, value, target[name], index);
-    if (result && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(target[name])) {
-      target[name] = arrayToObject(target[name]);
-    }
-    return !isNumericKey;
-  }
-  if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFormData(formData) && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(formData.entries)) {
-    const obj = {};
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEachEntry(formData, (name, value) => {
-      buildPath(parsePropPath(name), value, obj, 0);
-    });
-    return obj;
-  }
-  return null;
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (formDataToJSON);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/isAbsoluteURL.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/isAbsoluteURL.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ isAbsoluteURL)
-/* harmony export */ });
-
-
-/**
- * Determines whether the specified URL is absolute
- *
- * @param {string} url The URL to test
- *
- * @returns {boolean} True if the specified URL is absolute, otherwise false
- */
-function isAbsoluteURL(url) {
-  // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-  // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-  // by any combination of letters, digits, plus, period, or hyphen.
-  return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/isAxiosError.js":
-/*!********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/isAxiosError.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ isAxiosError)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-
-/**
- * Determines whether the payload is an error thrown by Axios
- *
- * @param {*} payload The value to test
- *
- * @returns {boolean} True if the payload is an error thrown by Axios, otherwise false
- */
-function isAxiosError(payload) {
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isObject(payload) && payload.isAxiosError === true;
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/isURLSameOrigin.js":
-/*!***********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/isURLSameOrigin.js ***!
-  \***********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../platform/index.js */ "./node_modules/axios/lib/platform/browser/index.js");
-
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_platform_index_js__WEBPACK_IMPORTED_MODULE_0__["default"].isStandardBrowserEnv ?
-// Standard browser envs have full support of the APIs needed to test
-// whether the request URL is of the same origin as current location.
-function standardBrowserEnv() {
-  const msie = /(msie|trident)/i.test(navigator.userAgent);
-  const urlParsingNode = document.createElement('a');
-  let originURL;
-
-  /**
-  * Parse a URL to discover it's components
-  *
-  * @param {String} url The URL to be parsed
-  * @returns {Object}
-  */
-  function resolveURL(url) {
-    let href = url;
-    if (msie) {
-      // IE needs attribute set twice to normalize properties
-      urlParsingNode.setAttribute('href', href);
-      href = urlParsingNode.href;
-    }
-    urlParsingNode.setAttribute('href', href);
-
-    // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-    return {
-      href: urlParsingNode.href,
-      protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-      host: urlParsingNode.host,
-      search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-      hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-      hostname: urlParsingNode.hostname,
-      port: urlParsingNode.port,
-      pathname: urlParsingNode.pathname.charAt(0) === '/' ? urlParsingNode.pathname : '/' + urlParsingNode.pathname
-    };
-  }
-  originURL = resolveURL(window.location.href);
-
-  /**
-  * Determine if a URL shares the same origin as the current location
-  *
-  * @param {String} requestURL The URL to test
-  * @returns {boolean} True if URL shares the same origin, otherwise false
-  */
-  return function isURLSameOrigin(requestURL) {
-    const parsed = _utils_js__WEBPACK_IMPORTED_MODULE_1__["default"].isString(requestURL) ? resolveURL(requestURL) : requestURL;
-    return parsed.protocol === originURL.protocol && parsed.host === originURL.host;
-  };
-}() :
-// Non standard browser envs (web workers, react-native) lack needed support.
-function nonStandardBrowserEnv() {
-  return function isURLSameOrigin() {
-    return true;
-  };
-}());
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/null.js":
-/*!************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/null.js ***!
-  \************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-// eslint-disable-next-line strict
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (null);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/parseHeaders.js":
-/*!********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/parseHeaders.js ***!
-  \********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../utils.js */ "./node_modules/axios/lib/utils.js");
-
-
-
-
-// RawAxiosHeaders whose duplicates are ignored by node
-// c.f. https://nodejs.org/api/http.html#http_message_headers
-const ignoreDuplicateOf = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toObjectSet(['age', 'authorization', 'content-length', 'content-type', 'etag', 'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since', 'last-modified', 'location', 'max-forwards', 'proxy-authorization', 'referer', 'retry-after', 'user-agent']);
-
-/**
- * Parse headers into an object
- *
- * ```
- * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
- * Connection: keep-alive
- * Transfer-Encoding: chunked
- * ```
- *
- * @param {String} rawHeaders Headers needing to be parsed
- *
- * @returns {Object} Headers parsed into an object
- */
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (rawHeaders => {
-  const parsed = {};
-  let key;
-  let val;
-  let i;
-  rawHeaders && rawHeaders.split('\n').forEach(function parser(line) {
-    i = line.indexOf(':');
-    key = line.substring(0, i).trim().toLowerCase();
-    val = line.substring(i + 1).trim();
-    if (!key || parsed[key] && ignoreDuplicateOf[key]) {
-      return;
-    }
-    if (key === 'set-cookie') {
-      if (parsed[key]) {
-        parsed[key].push(val);
-      } else {
-        parsed[key] = [val];
-      }
-    } else {
-      parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-    }
-  });
-  return parsed;
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/parseProtocol.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/parseProtocol.js ***!
-  \*********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ parseProtocol)
-/* harmony export */ });
-
-
-function parseProtocol(url) {
-  const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
-  return match && match[1] || '';
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/speedometer.js":
-/*!*******************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/speedometer.js ***!
-  \*******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-
-
-/**
- * Calculate data maxRate
- * @param {Number} [samplesCount= 10]
- * @param {Number} [min= 1000]
- * @returns {Function}
- */
-function speedometer(samplesCount, min) {
-  samplesCount = samplesCount || 10;
-  const bytes = new Array(samplesCount);
-  const timestamps = new Array(samplesCount);
-  let head = 0;
-  let tail = 0;
-  let firstSampleTS;
-  min = min !== undefined ? min : 1000;
-  return function push(chunkLength) {
-    const now = Date.now();
-    const startedAt = timestamps[tail];
-    if (!firstSampleTS) {
-      firstSampleTS = now;
-    }
-    bytes[head] = chunkLength;
-    timestamps[head] = now;
-    let i = tail;
-    let bytesCount = 0;
-    while (i !== head) {
-      bytesCount += bytes[i++];
-      i = i % samplesCount;
-    }
-    head = (head + 1) % samplesCount;
-    if (head === tail) {
-      tail = (tail + 1) % samplesCount;
-    }
-    if (now - firstSampleTS < min) {
-      return;
-    }
-    const passed = startedAt && now - startedAt;
-    return passed ? Math.round(bytesCount * 1000 / passed) : undefined;
-  };
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (speedometer);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/spread.js":
-/*!**************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/spread.js ***!
-  \**************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ spread)
-/* harmony export */ });
-
-
-/**
- * Syntactic sugar for invoking a function and expanding an array for arguments.
- *
- * Common use case would be to use `Function.prototype.apply`.
- *
- *  ```js
- *  function f(x, y, z) {}
- *  var args = [1, 2, 3];
- *  f.apply(null, args);
- *  ```
- *
- * With `spread` this example can be re-written.
- *
- *  ```js
- *  spread(function(x, y, z) {})([1, 2, 3]);
- *  ```
- *
- * @param {Function} callback
- *
- * @returns {Function}
- */
-function spread(callback) {
-  return function wrap(arr) {
-    return callback.apply(null, arr);
-  };
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/toFormData.js":
-/*!******************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/toFormData.js ***!
-  \******************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-/* harmony import */ var _platform_node_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../platform/node/classes/FormData.js */ "./node_modules/axios/lib/helpers/null.js");
-
-
-
-
-// temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
-
-
-/**
- * Determines if the given thing is a array or js object.
- *
- * @param {string} thing - The object or array to be visited.
- *
- * @returns {boolean}
- */
-function isVisitable(thing) {
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isPlainObject(thing) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(thing);
-}
-
-/**
- * It removes the brackets from the end of a string
- *
- * @param {string} key - The key of the parameter.
- *
- * @returns {string} the key without the brackets.
- */
-function removeBrackets(key) {
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].endsWith(key, '[]') ? key.slice(0, -2) : key;
-}
-
-/**
- * It takes a path, a key, and a boolean, and returns a string
- *
- * @param {string} path - The path to the current key.
- * @param {string} key - The key of the current object being iterated over.
- * @param {string} dots - If true, the key will be rendered with dots instead of brackets.
- *
- * @returns {string} The path to the current key.
- */
-function renderKey(path, key, dots) {
-  if (!path) return key;
-  return path.concat(key).map(function each(token, i) {
-    // eslint-disable-next-line no-param-reassign
-    token = removeBrackets(token);
-    return !dots && i ? '[' + token + ']' : token;
-  }).join(dots ? '.' : '');
-}
-
-/**
- * If the array is an array and none of its elements are visitable, then it's a flat array.
- *
- * @param {Array<any>} arr - The array to check
- *
- * @returns {boolean}
- */
-function isFlatArray(arr) {
-  return _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(arr) && !arr.some(isVisitable);
-}
-const predicates = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toFlatObject(_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"], {}, null, function filter(prop) {
-  return /^is[A-Z]/.test(prop);
-});
-
-/**
- * Convert a data object to FormData
- *
- * @param {Object} obj
- * @param {?Object} [formData]
- * @param {?Object} [options]
- * @param {Function} [options.visitor]
- * @param {Boolean} [options.metaTokens = true]
- * @param {Boolean} [options.dots = false]
- * @param {?Boolean} [options.indexes = false]
- *
- * @returns {Object}
- **/
-
-/**
- * It converts an object into a FormData object
- *
- * @param {Object<any, any>} obj - The object to convert to form data.
- * @param {string} formData - The FormData object to append to.
- * @param {Object<string, any>} options
- *
- * @returns
- */
-function toFormData(obj, formData, options) {
-  if (!_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isObject(obj)) {
-    throw new TypeError('target must be an object');
-  }
-
-  // eslint-disable-next-line no-param-reassign
-  formData = formData || new (_platform_node_classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__["default"] || FormData)();
-
-  // eslint-disable-next-line no-param-reassign
-  options = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toFlatObject(options, {
-    metaTokens: true,
-    dots: false,
-    indexes: false
-  }, false, function defined(option, source) {
-    // eslint-disable-next-line no-eq-null,eqeqeq
-    return !_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isUndefined(source[option]);
-  });
-  const metaTokens = options.metaTokens;
-  // eslint-disable-next-line no-use-before-define
-  const visitor = options.visitor || defaultVisitor;
-  const dots = options.dots;
-  const indexes = options.indexes;
-  const _Blob = options.Blob || typeof Blob !== 'undefined' && Blob;
-  const useBlob = _Blob && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isSpecCompliantForm(formData);
-  if (!_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFunction(visitor)) {
-    throw new TypeError('visitor must be a function');
-  }
-  function convertValue(value) {
-    if (value === null) return '';
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isDate(value)) {
-      return value.toISOString();
-    }
-    if (!useBlob && _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isBlob(value)) {
-      throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_2__["default"]('Blob is not supported. Use a Buffer instead.');
-    }
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArrayBuffer(value) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isTypedArray(value)) {
-      return useBlob && typeof Blob === 'function' ? new Blob([value]) : Buffer.from(value);
-    }
-    return value;
-  }
-
-  /**
-   * Default visitor.
-   *
-   * @param {*} value
-   * @param {String|Number} key
-   * @param {Array<String|Number>} path
-   * @this {FormData}
-   *
-   * @returns {boolean} return true to visit the each prop of the value recursively
-   */
-  function defaultVisitor(value, key, path) {
-    let arr = value;
-    if (value && !path && typeof value === 'object') {
-      if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].endsWith(key, '{}')) {
-        // eslint-disable-next-line no-param-reassign
-        key = metaTokens ? key : key.slice(0, -2);
-        // eslint-disable-next-line no-param-reassign
-        value = JSON.stringify(value);
-      } else if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isArray(value) && isFlatArray(value) || (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isFileList(value) || _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].endsWith(key, '[]')) && (arr = _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].toArray(value))) {
-        // eslint-disable-next-line no-param-reassign
-        key = removeBrackets(key);
-        arr.forEach(function each(el, index) {
-          !(_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isUndefined(el) || el === null) && formData.append(
-          // eslint-disable-next-line no-nested-ternary
-          indexes === true ? renderKey([key], index, dots) : indexes === null ? key : key + '[]', convertValue(el));
-        });
-        return false;
-      }
-    }
-    if (isVisitable(value)) {
-      return true;
-    }
-    formData.append(renderKey(path, key, dots), convertValue(value));
-    return false;
-  }
-  const stack = [];
-  const exposedHelpers = Object.assign(predicates, {
-    defaultVisitor,
-    convertValue,
-    isVisitable
-  });
-  function build(value, path) {
-    if (_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isUndefined(value)) return;
-    if (stack.indexOf(value) !== -1) {
-      throw Error('Circular reference detected in ' + path.join('.'));
-    }
-    stack.push(value);
-    _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].forEach(value, function each(el, key) {
-      const result = !(_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isUndefined(el) || el === null) && visitor.call(formData, el, _utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isString(key) ? key.trim() : key, path, exposedHelpers);
-      if (result === true) {
-        build(el, path ? path.concat(key) : [key]);
-      }
-    });
-    stack.pop();
-  }
-  if (!_utils_js__WEBPACK_IMPORTED_MODULE_0__["default"].isObject(obj)) {
-    throw new TypeError('data must be an object');
-  }
-  build(obj);
-  return formData;
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (toFormData);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/toURLEncodedForm.js":
-/*!************************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/toURLEncodedForm.js ***!
-  \************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ toURLEncodedForm)
-/* harmony export */ });
-/* harmony import */ var _utils_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utils.js */ "./node_modules/axios/lib/utils.js");
-/* harmony import */ var _toFormData_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./toFormData.js */ "./node_modules/axios/lib/helpers/toFormData.js");
-/* harmony import */ var _platform_index_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../platform/index.js */ "./node_modules/axios/lib/platform/browser/index.js");
-
-
-
-
-
-function toURLEncodedForm(data, options) {
-  return (0,_toFormData_js__WEBPACK_IMPORTED_MODULE_0__["default"])(data, new _platform_index_js__WEBPACK_IMPORTED_MODULE_1__["default"].classes.URLSearchParams(), Object.assign({
-    visitor: function (value, key, path, helpers) {
-      if (_platform_index_js__WEBPACK_IMPORTED_MODULE_1__["default"].isNode && _utils_js__WEBPACK_IMPORTED_MODULE_2__["default"].isBuffer(value)) {
-        this.append(key, value.toString('base64'));
-        return false;
-      }
-      return helpers.defaultVisitor.apply(this, arguments);
-    }
-  }, options));
-}
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/helpers/validator.js":
-/*!*****************************************************!*\
-  !*** ./node_modules/axios/lib/helpers/validator.js ***!
-  \*****************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _env_data_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../env/data.js */ "./node_modules/axios/lib/env/data.js");
-/* harmony import */ var _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../core/AxiosError.js */ "./node_modules/axios/lib/core/AxiosError.js");
-
-
-
-
-const validators = {};
-
-// eslint-disable-next-line func-names
-['object', 'boolean', 'number', 'function', 'string', 'symbol'].forEach((type, i) => {
-  validators[type] = function validator(thing) {
-    return typeof thing === type || 'a' + (i < 1 ? 'n ' : ' ') + type;
-  };
-});
-const deprecatedWarnings = {};
-
-/**
- * Transitional option validator
- *
- * @param {function|boolean?} validator - set to false if the transitional option has been removed
- * @param {string?} version - deprecated version / removed since version
- * @param {string?} message - some message with additional info
- *
- * @returns {function}
- */
-validators.transitional = function transitional(validator, version, message) {
-  function formatMessage(opt, desc) {
-    return '[Axios v' + _env_data_js__WEBPACK_IMPORTED_MODULE_0__.VERSION + '] Transitional option \'' + opt + '\'' + desc + (message ? '. ' + message : '');
-  }
-
-  // eslint-disable-next-line func-names
-  return (value, opt, opts) => {
-    if (validator === false) {
-      throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"](formatMessage(opt, ' has been removed' + (version ? ' in ' + version : '')), _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERR_DEPRECATED);
-    }
-    if (version && !deprecatedWarnings[opt]) {
-      deprecatedWarnings[opt] = true;
-      // eslint-disable-next-line no-console
-      console.warn(formatMessage(opt, ' has been deprecated since v' + version + ' and will be removed in the near future'));
-    }
-    return validator ? validator(value, opt, opts) : true;
-  };
-};
-
-/**
- * Assert object's properties type
- *
- * @param {object} options
- * @param {object} schema
- * @param {boolean?} allowUnknown
- *
- * @returns {object}
- */
-
-function assertOptions(options, schema, allowUnknown) {
-  if (typeof options !== 'object') {
-    throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"]('options must be an object', _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERR_BAD_OPTION_VALUE);
-  }
-  const keys = Object.keys(options);
-  let i = keys.length;
-  while (i-- > 0) {
-    const opt = keys[i];
-    const validator = schema[opt];
-    if (validator) {
-      const value = options[opt];
-      const result = value === undefined || validator(value, opt, options);
-      if (result !== true) {
-        throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"]('option ' + opt + ' must be ' + result, _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERR_BAD_OPTION_VALUE);
-      }
-      continue;
-    }
-    if (allowUnknown !== true) {
-      throw new _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"]('Unknown option ' + opt, _core_AxiosError_js__WEBPACK_IMPORTED_MODULE_1__["default"].ERR_BAD_OPTION);
-    }
-  }
-}
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  assertOptions,
-  validators
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/platform/browser/classes/Blob.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/axios/lib/platform/browser/classes/Blob.js ***!
-  \*****************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (typeof Blob !== 'undefined' ? Blob : null);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/platform/browser/classes/FormData.js":
-/*!*********************************************************************!*\
-  !*** ./node_modules/axios/lib/platform/browser/classes/FormData.js ***!
-  \*********************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (typeof FormData !== 'undefined' ? FormData : null);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/platform/browser/classes/URLSearchParams.js":
-/*!****************************************************************************!*\
-  !*** ./node_modules/axios/lib/platform/browser/classes/URLSearchParams.js ***!
-  \****************************************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _helpers_AxiosURLSearchParams_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../helpers/AxiosURLSearchParams.js */ "./node_modules/axios/lib/helpers/AxiosURLSearchParams.js");
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (typeof URLSearchParams !== 'undefined' ? URLSearchParams : _helpers_AxiosURLSearchParams_js__WEBPACK_IMPORTED_MODULE_0__["default"]);
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/platform/browser/index.js":
-/*!**********************************************************!*\
-  !*** ./node_modules/axios/lib/platform/browser/index.js ***!
-  \**********************************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _classes_URLSearchParams_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./classes/URLSearchParams.js */ "./node_modules/axios/lib/platform/browser/classes/URLSearchParams.js");
-/* harmony import */ var _classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./classes/FormData.js */ "./node_modules/axios/lib/platform/browser/classes/FormData.js");
-/* harmony import */ var _classes_Blob_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./classes/Blob.js */ "./node_modules/axios/lib/platform/browser/classes/Blob.js");
-
-
-
-
-/**
- * Determine if we're running in a standard browser environment
- *
- * This allows axios to run in a web worker, and react-native.
- * Both environments support XMLHttpRequest, but not fully standard globals.
- *
- * web workers:
- *  typeof window -> undefined
- *  typeof document -> undefined
- *
- * react-native:
- *  navigator.product -> 'ReactNative'
- * nativescript
- *  navigator.product -> 'NativeScript' or 'NS'
- *
- * @returns {boolean}
- */
-const isStandardBrowserEnv = (() => {
-  let product;
-  if (typeof navigator !== 'undefined' && ((product = navigator.product) === 'ReactNative' || product === 'NativeScript' || product === 'NS')) {
-    return false;
-  }
-  return typeof window !== 'undefined' && typeof document !== 'undefined';
-})();
-
-/**
- * Determine if we're running in a standard browser webWorker environment
- *
- * Although the `isStandardBrowserEnv` method indicates that
- * `allows axios to run in a web worker`, the WebWorker will still be
- * filtered out due to its judgment standard
- * `typeof window !== 'undefined' && typeof document !== 'undefined'`.
- * This leads to a problem when axios post `FormData` in webWorker
- */
-const isStandardBrowserWebWorkerEnv = (() => {
-  return typeof WorkerGlobalScope !== 'undefined' &&
-  // eslint-disable-next-line no-undef
-  self instanceof WorkerGlobalScope && typeof self.importScripts === 'function';
-})();
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  isBrowser: true,
-  classes: {
-    URLSearchParams: _classes_URLSearchParams_js__WEBPACK_IMPORTED_MODULE_0__["default"],
-    FormData: _classes_FormData_js__WEBPACK_IMPORTED_MODULE_1__["default"],
-    Blob: _classes_Blob_js__WEBPACK_IMPORTED_MODULE_2__["default"]
-  },
-  isStandardBrowserEnv,
-  isStandardBrowserWebWorkerEnv,
-  protocols: ['http', 'https', 'file', 'blob', 'url', 'data']
-});
-
-/***/ }),
-
-/***/ "./node_modules/axios/lib/utils.js":
-/*!*****************************************!*\
-  !*** ./node_modules/axios/lib/utils.js ***!
-  \*****************************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _helpers_bind_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./helpers/bind.js */ "./node_modules/axios/lib/helpers/bind.js");
-
-
-
-
-// utils is a library of generic helper functions non-specific to axios
-
-const {
-  toString
-} = Object.prototype;
-const {
-  getPrototypeOf
-} = Object;
-const kindOf = (cache => thing => {
-  const str = toString.call(thing);
-  return cache[str] || (cache[str] = str.slice(8, -1).toLowerCase());
-})(Object.create(null));
-const kindOfTest = type => {
-  type = type.toLowerCase();
-  return thing => kindOf(thing) === type;
-};
-const typeOfTest = type => thing => typeof thing === type;
-
-/**
- * Determine if a value is an Array
- *
- * @param {Object} val The value to test
- *
- * @returns {boolean} True if value is an Array, otherwise false
- */
-const {
-  isArray
-} = Array;
-
-/**
- * Determine if a value is undefined
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-const isUndefined = typeOfTest('undefined');
-
-/**
- * Determine if a value is a Buffer
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a Buffer, otherwise false
- */
-function isBuffer(val) {
-  return val !== null && !isUndefined(val) && val.constructor !== null && !isUndefined(val.constructor) && isFunction(val.constructor.isBuffer) && val.constructor.isBuffer(val);
-}
-
-/**
- * Determine if a value is an ArrayBuffer
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is an ArrayBuffer, otherwise false
- */
-const isArrayBuffer = kindOfTest('ArrayBuffer');
-
-/**
- * Determine if a value is a view on an ArrayBuffer
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
- */
-function isArrayBufferView(val) {
-  let result;
-  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
-    result = ArrayBuffer.isView(val);
-  } else {
-    result = val && val.buffer && isArrayBuffer(val.buffer);
-  }
-  return result;
-}
-
-/**
- * Determine if a value is a String
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a String, otherwise false
- */
-const isString = typeOfTest('string');
-
-/**
- * Determine if a value is a Function
- *
- * @param {*} val The value to test
- * @returns {boolean} True if value is a Function, otherwise false
- */
-const isFunction = typeOfTest('function');
-
-/**
- * Determine if a value is a Number
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a Number, otherwise false
- */
-const isNumber = typeOfTest('number');
-
-/**
- * Determine if a value is an Object
- *
- * @param {*} thing The value to test
- *
- * @returns {boolean} True if value is an Object, otherwise false
- */
-const isObject = thing => thing !== null && typeof thing === 'object';
-
-/**
- * Determine if a value is a Boolean
- *
- * @param {*} thing The value to test
- * @returns {boolean} True if value is a Boolean, otherwise false
- */
-const isBoolean = thing => thing === true || thing === false;
-
-/**
- * Determine if a value is a plain Object
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a plain Object, otherwise false
- */
-const isPlainObject = val => {
-  if (kindOf(val) !== 'object') {
-    return false;
-  }
-  const prototype = getPrototypeOf(val);
-  return (prototype === null || prototype === Object.prototype || Object.getPrototypeOf(prototype) === null) && !(Symbol.toStringTag in val) && !(Symbol.iterator in val);
-};
-
-/**
- * Determine if a value is a Date
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a Date, otherwise false
- */
-const isDate = kindOfTest('Date');
-
-/**
- * Determine if a value is a File
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a File, otherwise false
- */
-const isFile = kindOfTest('File');
-
-/**
- * Determine if a value is a Blob
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a Blob, otherwise false
- */
-const isBlob = kindOfTest('Blob');
-
-/**
- * Determine if a value is a FileList
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a File, otherwise false
- */
-const isFileList = kindOfTest('FileList');
-
-/**
- * Determine if a value is a Stream
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a Stream, otherwise false
- */
-const isStream = val => isObject(val) && isFunction(val.pipe);
-
-/**
- * Determine if a value is a FormData
- *
- * @param {*} thing The value to test
- *
- * @returns {boolean} True if value is an FormData, otherwise false
- */
-const isFormData = thing => {
-  let kind;
-  return thing && (typeof FormData === 'function' && thing instanceof FormData || isFunction(thing.append) && ((kind = kindOf(thing)) === 'formdata' ||
-  // detect form-data instance
-  kind === 'object' && isFunction(thing.toString) && thing.toString() === '[object FormData]'));
-};
-
-/**
- * Determine if a value is a URLSearchParams object
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a URLSearchParams object, otherwise false
- */
-const isURLSearchParams = kindOfTest('URLSearchParams');
-
-/**
- * Trim excess whitespace off the beginning and end of a string
- *
- * @param {String} str The String to trim
- *
- * @returns {String} The String freed of excess whitespace
- */
-const trim = str => str.trim ? str.trim() : str.replace(/^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, '');
-
-/**
- * Iterate over an Array or an Object invoking a function for each item.
- *
- * If `obj` is an Array callback will be called passing
- * the value, index, and complete array for each item.
- *
- * If 'obj' is an Object callback will be called passing
- * the value, key, and complete object for each property.
- *
- * @param {Object|Array} obj The object to iterate
- * @param {Function} fn The callback to invoke for each item
- *
- * @param {Boolean} [allOwnKeys = false]
- * @returns {any}
- */
-function forEach(obj, fn, {
-  allOwnKeys = false
-} = {}) {
-  // Don't bother if no value provided
-  if (obj === null || typeof obj === 'undefined') {
-    return;
-  }
-  let i;
-  let l;
-
-  // Force an array if not already something iterable
-  if (typeof obj !== 'object') {
-    /*eslint no-param-reassign:0*/
-    obj = [obj];
-  }
-  if (isArray(obj)) {
-    // Iterate over array values
-    for (i = 0, l = obj.length; i < l; i++) {
-      fn.call(null, obj[i], i, obj);
-    }
-  } else {
-    // Iterate over object keys
-    const keys = allOwnKeys ? Object.getOwnPropertyNames(obj) : Object.keys(obj);
-    const len = keys.length;
-    let key;
-    for (i = 0; i < len; i++) {
-      key = keys[i];
-      fn.call(null, obj[key], key, obj);
-    }
-  }
-}
-function findKey(obj, key) {
-  key = key.toLowerCase();
-  const keys = Object.keys(obj);
-  let i = keys.length;
-  let _key;
-  while (i-- > 0) {
-    _key = keys[i];
-    if (key === _key.toLowerCase()) {
-      return _key;
-    }
-  }
-  return null;
-}
-const _global = (() => {
-  /*eslint no-undef:0*/
-  if (typeof globalThis !== "undefined") return globalThis;
-  return typeof self !== "undefined" ? self : typeof window !== 'undefined' ? window : global;
-})();
-const isContextDefined = context => !isUndefined(context) && context !== _global;
-
-/**
- * Accepts varargs expecting each argument to be an object, then
- * immutably merges the properties of each object and returns result.
- *
- * When multiple objects contain the same key the later object in
- * the arguments list will take precedence.
- *
- * Example:
- *
- * ```js
- * var result = merge({foo: 123}, {foo: 456});
- * console.log(result.foo); // outputs 456
- * ```
- *
- * @param {Object} obj1 Object to merge
- *
- * @returns {Object} Result of all merge properties
- */
-function merge( /* obj1, obj2, obj3, ... */
-) {
-  const {
-    caseless
-  } = isContextDefined(this) && this || {};
-  const result = {};
-  const assignValue = (val, key) => {
-    const targetKey = caseless && findKey(result, key) || key;
-    if (isPlainObject(result[targetKey]) && isPlainObject(val)) {
-      result[targetKey] = merge(result[targetKey], val);
-    } else if (isPlainObject(val)) {
-      result[targetKey] = merge({}, val);
-    } else if (isArray(val)) {
-      result[targetKey] = val.slice();
-    } else {
-      result[targetKey] = val;
-    }
-  };
-  for (let i = 0, l = arguments.length; i < l; i++) {
-    arguments[i] && forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Extends object a by mutably adding to it the properties of object b.
- *
- * @param {Object} a The object to be extended
- * @param {Object} b The object to copy properties from
- * @param {Object} thisArg The object to bind function to
- *
- * @param {Boolean} [allOwnKeys]
- * @returns {Object} The resulting value of object a
- */
-const extend = (a, b, thisArg, {
-  allOwnKeys
-} = {}) => {
-  forEach(b, (val, key) => {
-    if (thisArg && isFunction(val)) {
-      a[key] = (0,_helpers_bind_js__WEBPACK_IMPORTED_MODULE_0__["default"])(val, thisArg);
-    } else {
-      a[key] = val;
-    }
-  }, {
-    allOwnKeys
-  });
-  return a;
-};
-
-/**
- * Remove byte order marker. This catches EF BB BF (the UTF-8 BOM)
- *
- * @param {string} content with BOM
- *
- * @returns {string} content value without BOM
- */
-const stripBOM = content => {
-  if (content.charCodeAt(0) === 0xFEFF) {
-    content = content.slice(1);
-  }
-  return content;
-};
-
-/**
- * Inherit the prototype methods from one constructor into another
- * @param {function} constructor
- * @param {function} superConstructor
- * @param {object} [props]
- * @param {object} [descriptors]
- *
- * @returns {void}
- */
-const inherits = (constructor, superConstructor, props, descriptors) => {
-  constructor.prototype = Object.create(superConstructor.prototype, descriptors);
-  constructor.prototype.constructor = constructor;
-  Object.defineProperty(constructor, 'super', {
-    value: superConstructor.prototype
-  });
-  props && Object.assign(constructor.prototype, props);
-};
-
-/**
- * Resolve object with deep prototype chain to a flat object
- * @param {Object} sourceObj source object
- * @param {Object} [destObj]
- * @param {Function|Boolean} [filter]
- * @param {Function} [propFilter]
- *
- * @returns {Object}
- */
-const toFlatObject = (sourceObj, destObj, filter, propFilter) => {
-  let props;
-  let i;
-  let prop;
-  const merged = {};
-  destObj = destObj || {};
-  // eslint-disable-next-line no-eq-null,eqeqeq
-  if (sourceObj == null) return destObj;
-  do {
-    props = Object.getOwnPropertyNames(sourceObj);
-    i = props.length;
-    while (i-- > 0) {
-      prop = props[i];
-      if ((!propFilter || propFilter(prop, sourceObj, destObj)) && !merged[prop]) {
-        destObj[prop] = sourceObj[prop];
-        merged[prop] = true;
-      }
-    }
-    sourceObj = filter !== false && getPrototypeOf(sourceObj);
-  } while (sourceObj && (!filter || filter(sourceObj, destObj)) && sourceObj !== Object.prototype);
-  return destObj;
-};
-
-/**
- * Determines whether a string ends with the characters of a specified string
- *
- * @param {String} str
- * @param {String} searchString
- * @param {Number} [position= 0]
- *
- * @returns {boolean}
- */
-const endsWith = (str, searchString, position) => {
-  str = String(str);
-  if (position === undefined || position > str.length) {
-    position = str.length;
-  }
-  position -= searchString.length;
-  const lastIndex = str.indexOf(searchString, position);
-  return lastIndex !== -1 && lastIndex === position;
-};
-
-/**
- * Returns new array from array like object or null if failed
- *
- * @param {*} [thing]
- *
- * @returns {?Array}
- */
-const toArray = thing => {
-  if (!thing) return null;
-  if (isArray(thing)) return thing;
-  let i = thing.length;
-  if (!isNumber(i)) return null;
-  const arr = new Array(i);
-  while (i-- > 0) {
-    arr[i] = thing[i];
-  }
-  return arr;
-};
-
-/**
- * Checking if the Uint8Array exists and if it does, it returns a function that checks if the
- * thing passed in is an instance of Uint8Array
- *
- * @param {TypedArray}
- *
- * @returns {Array}
- */
-// eslint-disable-next-line func-names
-const isTypedArray = (TypedArray => {
-  // eslint-disable-next-line func-names
-  return thing => {
-    return TypedArray && thing instanceof TypedArray;
-  };
-})(typeof Uint8Array !== 'undefined' && getPrototypeOf(Uint8Array));
-
-/**
- * For each entry in the object, call the function with the key and value.
- *
- * @param {Object<any, any>} obj - The object to iterate over.
- * @param {Function} fn - The function to call for each entry.
- *
- * @returns {void}
- */
-const forEachEntry = (obj, fn) => {
-  const generator = obj && obj[Symbol.iterator];
-  const iterator = generator.call(obj);
-  let result;
-  while ((result = iterator.next()) && !result.done) {
-    const pair = result.value;
-    fn.call(obj, pair[0], pair[1]);
-  }
-};
-
-/**
- * It takes a regular expression and a string, and returns an array of all the matches
- *
- * @param {string} regExp - The regular expression to match against.
- * @param {string} str - The string to search.
- *
- * @returns {Array<boolean>}
- */
-const matchAll = (regExp, str) => {
-  let matches;
-  const arr = [];
-  while ((matches = regExp.exec(str)) !== null) {
-    arr.push(matches);
-  }
-  return arr;
-};
-
-/* Checking if the kindOfTest function returns true when passed an HTMLFormElement. */
-const isHTMLForm = kindOfTest('HTMLFormElement');
-const toCamelCase = str => {
-  return str.toLowerCase().replace(/[-_\s]([a-z\d])(\w*)/g, function replacer(m, p1, p2) {
-    return p1.toUpperCase() + p2;
-  });
-};
-
-/* Creating a function that will check if an object has a property. */
-const hasOwnProperty = (({
-  hasOwnProperty
-}) => (obj, prop) => hasOwnProperty.call(obj, prop))(Object.prototype);
-
-/**
- * Determine if a value is a RegExp object
- *
- * @param {*} val The value to test
- *
- * @returns {boolean} True if value is a RegExp object, otherwise false
- */
-const isRegExp = kindOfTest('RegExp');
-const reduceDescriptors = (obj, reducer) => {
-  const descriptors = Object.getOwnPropertyDescriptors(obj);
-  const reducedDescriptors = {};
-  forEach(descriptors, (descriptor, name) => {
-    if (reducer(descriptor, name, obj) !== false) {
-      reducedDescriptors[name] = descriptor;
-    }
-  });
-  Object.defineProperties(obj, reducedDescriptors);
-};
-
-/**
- * Makes all methods read-only
- * @param {Object} obj
- */
-
-const freezeMethods = obj => {
-  reduceDescriptors(obj, (descriptor, name) => {
-    // skip restricted props in strict mode
-    if (isFunction(obj) && ['arguments', 'caller', 'callee'].indexOf(name) !== -1) {
-      return false;
-    }
-    const value = obj[name];
-    if (!isFunction(value)) return;
-    descriptor.enumerable = false;
-    if ('writable' in descriptor) {
-      descriptor.writable = false;
-      return;
-    }
-    if (!descriptor.set) {
-      descriptor.set = () => {
-        throw Error('Can not rewrite read-only method \'' + name + '\'');
-      };
-    }
-  });
-};
-const toObjectSet = (arrayOrString, delimiter) => {
-  const obj = {};
-  const define = arr => {
-    arr.forEach(value => {
-      obj[value] = true;
-    });
-  };
-  isArray(arrayOrString) ? define(arrayOrString) : define(String(arrayOrString).split(delimiter));
-  return obj;
-};
-const noop = () => {};
-const toFiniteNumber = (value, defaultValue) => {
-  value = +value;
-  return Number.isFinite(value) ? value : defaultValue;
-};
-const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
-const DIGIT = '0123456789';
-const ALPHABET = {
-  DIGIT,
-  ALPHA,
-  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-};
-const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-  let str = '';
-  const {
-    length
-  } = alphabet;
-  while (size--) {
-    str += alphabet[Math.random() * length | 0];
-  }
-  return str;
-};
-
-/**
- * If the thing is a FormData object, return true, otherwise return false.
- *
- * @param {unknown} thing - The thing to check.
- *
- * @returns {boolean}
- */
-function isSpecCompliantForm(thing) {
-  return !!(thing && isFunction(thing.append) && thing[Symbol.toStringTag] === 'FormData' && thing[Symbol.iterator]);
-}
-const toJSONObject = obj => {
-  const stack = new Array(10);
-  const visit = (source, i) => {
-    if (isObject(source)) {
-      if (stack.indexOf(source) >= 0) {
-        return;
-      }
-      if (!('toJSON' in source)) {
-        stack[i] = source;
-        const target = isArray(source) ? [] : {};
-        forEach(source, (value, key) => {
-          const reducedValue = visit(value, i + 1);
-          !isUndefined(reducedValue) && (target[key] = reducedValue);
-        });
-        stack[i] = undefined;
-        return target;
-      }
-    }
-    return source;
-  };
-  return visit(obj, 0);
-};
-const isAsyncFn = kindOfTest('AsyncFunction');
-const isThenable = thing => thing && (isObject(thing) || isFunction(thing)) && isFunction(thing.then) && isFunction(thing.catch);
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  isArray,
-  isArrayBuffer,
-  isBuffer,
-  isFormData,
-  isArrayBufferView,
-  isString,
-  isNumber,
-  isBoolean,
-  isObject,
-  isPlainObject,
-  isUndefined,
-  isDate,
-  isFile,
-  isBlob,
-  isRegExp,
-  isFunction,
-  isStream,
-  isURLSearchParams,
-  isTypedArray,
-  isFileList,
-  forEach,
-  merge,
-  extend,
-  trim,
-  stripBOM,
-  inherits,
-  toFlatObject,
-  kindOf,
-  kindOfTest,
-  endsWith,
-  toArray,
-  forEachEntry,
-  matchAll,
-  isHTMLForm,
-  hasOwnProperty,
-  hasOwnProp: hasOwnProperty,
-  // an alias to avoid ESLint no-prototype-builtins detection
-  reduceDescriptors,
-  freezeMethods,
-  toObjectSet,
-  toCamelCase,
-  noop,
-  toFiniteNumber,
-  findKey,
-  global: _global,
-  isContextDefined,
-  ALPHABET,
-  generateString,
-  isSpecCompliantForm,
-  toJSONObject,
-  isAsyncFn,
-  isThenable
-});
-
-/***/ }),
-
 /***/ "./static/instrumentCodes.json":
 /*!*************************************!*\
   !*** ./static/instrumentCodes.json ***!
@@ -69888,17 +66493,6 @@ module.exports = JSON.parse('{"info":[{"part":"piano","pages":[{"part":"piano","
 
 "use strict";
 module.exports = JSON.parse('{"bass":{"name":"John","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"bassoon":{"name":"Dick","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"cello":{"name":"Harry","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"clarinet":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"flute":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"trombone":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"trumpet":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"tuba":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"viola1":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"viola2":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"violin1":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"violin2":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"violin3":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"},"piano":{"name":"Insert Name","info":"Insert text about the instrumentalist here. This should work as a nice pop up and will disappear on the pressing of a button or clicking elsewhere!"}}');
-
-/***/ }),
-
-/***/ "./static/res/info/pagesDurs.json":
-/*!****************************************!*\
-  !*** ./static/res/info/pagesDurs.json ***!
-  \****************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('[{"inst":"violin3","pageDurs":[[4.465,0.428,2.159,4.9,0.734,1.804,0.738,10.39,0.788,2.368,2.1,4.89,1.449,1.641,2.409],[2.721,0.866,4.503,3.958,0.616,0.469,0.427,1.269,2.765,3.33,4.562,3.974,8.23,1.431],[2.587],[0.745,1.571],[8.511,0.591,0.63,0.53,0.563,0.51,1.222,0.627,8.224,0.558,1.7,1.56,4.585,10.495,0.522,3.198,0.512,3.693,2.628,0.88],[0.84,4.35,1.38,3.958,3.215,2.411,2.277,0.565,3.707,1.68,6.567,0.709,4.581,0.569,0.994,6.105,1.856,1.374,0.571,10.231],[2.213,1.962,1.11],[2.22,1.131,1.975,7.896],[1.408,0.631,1.432],[0.993,2.522,2.78],[1.625,4.624,7.65,2.44,0.93,3.115,3.14,1.663,0.781,2.15,2.739,2.879,0.959,1.509,0.573,7.976,2.464,0.617,13.859,1.311,1.9,1.297,2.917,1.162],[0.623,1.663,0.616,2.801,2.742,4.5,1.21,1.721,5.56,1.148,2.458,4.403,5.164,1.56,0.495,0.505,0.827,5.378,0.522,1.979],[10.994,1.644],[1.329,2.27,1.47],[2.381,2.314,1.346,1.225],[1.205,2.42,0.897,9.29,0.756]]},{"inst":"trombone","pageDurs":[[3.865,4.756,2.806,2.764,3.894,1.507,2.334,1.426,2.371,2.511,4.404,2.262,0.687,2.218],[2.306,3.98,1.776,0.928,1.109,1.937,1.4,1.631,1.33,1.595,2.337,7.162,5.706],[11.4,1.979,1.932,1.782,0.804,0.609,1.14,1.155,2.963,0.636,2.367,0.917,0.88,0.703,1.795,0.837,1.393,1.101,4.313,1.724,1.215,1.862,3.546,1.18],[1.513,1.704,0.984,0.954,2.732,2.213,0.981,1.929,0.981,1.607,0.91,1.412,2.699,2.783,2.35,2.277,1.172,4.21,0.888,1.241],[1.233],[0.091],[0.812,1.59,1.854,1.461,1.306,0.406,1.703,0.998,0.718,0.873,9.212,2.176,1.219,0.701,1.907,0.503,2.323,1.348,6.511,0.786,6.314,2.333,0.637,5.221,0.688,0.653,0.467,1.5,0.763,3.459,0.87],[2.309,0.586,1.879,1.59,0.923,0.386,2.214,0.916,2.388,1.427,0.665,4.707,0.86,1.188,2.751,1.381,2.137,0.679,0.718,0.453,1.211,3.93,0.558,1.39,2.183,0.769,0.909,3.523],[3.921,2.2,4.816,0.695,0.73,2.476,0.686,2.465,2.697,1.986,0.376,1.741,0.56,1.783,2.721,1.861,1.97,1.555,2.453,0.367,17.696],[1.988,2.102,1.453,4.346,1.113,1.355,1.8,0.653,2.576,1.879,1.43,1.248,1.316,3.137,1.267,0.709,2.993,0.93,0.953,2.939],[0.897,1.2,0.409,0.483,3.572,1.597,1.702,1.353,0.746,0.513,3.151,0.4,0.667,0.648,2.758,1.337,0.662,1.144,0.551,0.413,3.348,0.39,2.72,1.346,0.418,1.567,0.558,0.672,0.304,1.139],[1.356,0.538,2.645,0.633,1.593,2.656,5.729,2.308,0.736,0.694,0.767,0.572,0.826,2.757,2.76,13.452,1.128,3.121,1.115,0.853,1.138,0.512,4.728,1.741,0.455,3.911]]},{"inst":"violin2","pageDurs":[[6.109,2.16,5.99,6.1],[3.593,5.706,3.437,3.564,11.491],[1.675,2.51,2.72,3.925,3.102,1.16,0.982,5.76,6.601,1.213,5.624,6.571,3.575,4.14],[2.237,2.723,1.995,6.293,4.274,1.172,0.864,1.6,1.77,1.74,9.47],[2.649,3.8,1.207,0.973,2.358,9.875,4.291,1.79,3.211,1.406,2.458,5.932,1.832,1.548,2.216,1.975,6.848,2.31,4.724,1.989,1.932,1.84,1.705,8.83],[2.799,1.655,3.125,13.406,0.951,3.104,1.584,5.939,2.181,10.202,1.733,1.86,1.3,1.342,2.529,3.204,0.831,8.376,1.825,6.72],[9.264,2.486,2.351,13.768,1.193,2.813,4.365,1.543,1.74,1.449,1.167,2.301,1.713,1.756,1.474],[11.867,2.182,3.137,3.273,2.583,2.318,10.904,1.611,15.584,1.764],[8.508,1.875,0.912,1.364,4.45,7.34],[18.849,3.214,3.589,1.321,4.22],[1.415,1.986,1.457,1.82,1.219,4.92,3.435,4.75,1.236,5.64,1.304,1.546,4.848,1.657,2.977,4.973,1.12,5.192,1.266,0.899,2.214],[2.936,14.209,1.343,1.136,0.917,1.491,1.3,12.663,4.85,6.512,1.853,10.929,12.367],[0.965,2.356,1.509,1.343,0.888,2.107,1.58,1.983,1.545,5.144,7.874,1.12,26.955],[1.634,1.367,5.8,1.42,1.722,5.221,4.754,1.438,4.11,0.799,1.896,5.61,3.114,2.888,3.292,1.225],[2.924,7.73,1.494],[0.091]]},{"inst":"violin1","pageDurs":[[9.177,4.83,4.93,7.484,5.299,6.361,5.979,4.233,1.874,2.366,8.567,7.856,4.271,4.643,5.781,1.776,5.572,0.842,1.996,10.425,0.81,5.154,9.542],[12.979,0.385,2.499,5.641,5.38,24.45,1.29,1.642,4.31,4.736,1.642,1.849,3.668,1.485,6.175,29.86,1.918,3.724,3.203],[3.498],[5.38,20.874,1.792],[4.979,6.477,2.656,11.307,0.678,1.88,0.576,8.56,7.641,15.522,3.18,3.11],[3.319,4.46,1.624,2.832,9.223,7.22],[17.53,14.651,13.397,1.943,1.995,5.363,10.889,2.39,4.945,7.104],[21.222,0.602,9.821,1.731,1.46,4.62,19.132,11.5,1.26],[8.242,4.178,10.183,10.142,1.485,1.531,10.202,4.444,2.553,1.14,14.93,0.904,0.683,0.539,0.525,3.993,0.878,2.65,1.28,0.531,8.892,1.434,1.502,2.133,1.191,0.609,1.691,0.594],[2.97,2.242,1.287,0.355,3.317,1.337,2.212,2.205,14.209,0.713,10.417,3.25,4.178,14.418],[4.595,1.269,6.733,2.205,0.716,1.724,2.65,1.152,0.812,1.916,1.462,1.788,2.798,3.139,5.87,1.81,2.135,1.44,5.82,1.721,3.356,1.369,2.157,1.71,8.544,2.65,1.804,1.531,1.671,0.553,0.602,1.302,0.702],[1.856,3.691,5.456,3.807,3.505,2.28,1.73,2.65,4.248,1.551,2.404,20.607,0.588,0.967,1.67,1.392,1.326,1.949,4.202,5.194],[1.226,4.736,1.1,2.541,1.137,1.389,1.9,0.532,6.361,0.86,1.898,0.486,1.221,1.241,2.17,10.14,1.499,1.519,0.598,1.229],[2.146,0.616,7.398,1.487,2.938,3.17,0.613,2.587,8.196,3.385,6.859],[0.231,27.831,1.701,4.351,6.981,7.63,10.39],[1.604,4.858,36.759,1.753]]},{"inst":"cello","pageDurs":[[2.737,4.904,1.437,1.152,8.371,1.796,2.217,1.384,1.943,1.245,2.479,6.55,4.818,1.608,1.416,1.291,0.941,3.603,3.143,1.86,1.656,1.176,1.5,2.231,3.516,1.26,2.508,2.2,7.571],[2.5,2.44,1.44,1.39,0.9,2.17,1.54,2.68,1.6,8.29,3.31,1.13,1.6,6.6,9.756,2.646,2.916,2.2,8.61,1.556,9.358,6.229,7.78,1.99,1.63,4.646,6.99],[3.675,2.4,7.819,8.777,14.252,1.576,0.665,1.547,8.465,1.795,1.895,0.93,1.373],[1.533,6.875,2.877,2.72,0.576,9.653,1.37,9.955,1.673,1.64],[18.684,15.75,3.437],[6.835,3.157,1.164],[0.593],[0.091],[5.913,4.582,2.87,1.87,6.295,3.157,1.353,2.309,10.738,1.481,4.425,4.964,0.637,1.105,1.282,1.78,1.7,1.81,1.665,1.677,4.913,3.581,1.154,2.215,1.302,1.75,1.953,8.175,1.519,0.7,1.43,8.599,2.244,1.805,8.145,11.31],[8.712,7.435,1.475,1.953,13.814,0.878,11.569,3.118,10.178,1.776,1.529,3.251,1.465,15.24,15.753,2.491,11.26,2.92,2.96,1.672,2.614,8.55,2.254,10.281],[1.904,2.18,3.646,1.876,2.184,9.502,10.7,3.581,1.118,1.148,1.716,1.284,1.657,1.805,2.261,1.965,1.545,1.841,1.592,1.59,2.344,3.522,1.965,11.598,3.25,2.36,2.6,1.752,1.995,12.391],[1.941,3.439,2.664,5.352,1.983,2.89,3.487,2.427,2.427,1.604,1.551,8.916,1.811,1.71,14.149,1.722,4.15,4.481,5.979,1.367,2.581,1.338,2.676],[16.364],[24.344],[3.214,8.176,2.7,1.367,2.214,8.892,1.497,1.438,2.445,9.993,1.36,1.947],[11.112,2.243,3.907,2.89,4.184,4.504,1.861,1.825,1.683]]},{"inst":"flute","pageDurs":[[4.701,2.406,5.813,5.193,1.313],[9.887,2.406,0.987,0.751],[2.857,2.156,5.605,1.71,1.951,2.225,0.272,0.827,4.438,4.31,1.43,1.219,2.198,5.484,1.773,4.966,6.543,5.39,1.442,3.83,4.68,5.179,1.93,3.278,0.496,3.193,2.163,1.13,1.698,0.863,2.85,2.461],[1.73,4.908,1.102,3.999,1.325,2.48,1.177,3.778,7.49,1.48,5.474,1.426,1.995,4.363,2.691,2.581,5.466,7.628,9.398,0.923,5.189,4.8,2.295],[8.919,5.13,3.212,4.776,6.38,5.69,7.672,0.602,5.713,1.285,4.651,0.501,3.893,1.133,1.371,1.192,2.963,0.917,2.39,0.906,2.619,1.642,2.791,1.384,3.277,3.95],[1.789,2.344,1.655,0.947,3.156,1.888,3.325,2.801,8.675,3.319,1.298,1.29,1.277,6.378,2.299,1.515,18.488,0.637,1.39],[0.94,2.974,2.64,3.388,3.124,3.17,1.344,3.98,2.187,3.136],[4.256,1.128,1.94,4.976,2.467,1.329,2.12,2.535,0.821,6.996,6.825,0.536,4.413,2.448,1.323,3.73,4.468,3.106,1.34,1.99,1.896,5.264,0.941,0.861,7.554,2.445,0.879,0.599,5.59],[1.822,0.972,2.37,1.776,15.671,0.99,1.93,5.584],[1.17,6.54,7.117,2.282,0.755,2.574],[1.777,6.756,0.86,1.182,0.827,5.735,1.354,2.292,0.736,1.775,0.885,1.293,7.683,3.882,1.793,3.818,0.99,1.835,0.818,1.708,3.75,4.771],[1.159,6.919,3.561,5.399,3.26,5.742,4.509,5.495,10.76,11.126,1.36,6.23,1.213,0.787,5.61,6.627,6.812,4.755]]},{"inst":"bass","pageDurs":[[4.579,1.576,9.958,4.784,4.881,2.659,4.951,4.201,2.18,1.618,1.861,1.166,2.131,6.194,11.784,10.972,12.493,1.9,1.758,10.274],[1.128,1.649,2.181,2.337,2.372,5.329,10.468,3.96,2.303,4.467,3.68,6.903,1.909],[1.898],[2.609,2.123],[12.372,2.32,1.631,2.94,1.568,2.424,2.129,1.516,1.493,5.792,2.829,1.591,1.93,1.388,3.686,2.175,10.237,2.215,3.569,3.722,2.215,4.444],[8.833,2.34,0.983,1.424,1.566,4.616,1.6,5.791,6.258,6.45,4.993,2.7,2.28,1.728,1.532,1.266,4.391,4.41,3.8],[1.933,2.591,5.124,1.441,5.441,5,1.508,1.674,1.533,3.58,3.391,4.133,2.533,2.766,6.383,2.85,4.308,1.433,6.459,1.784,6.395,12.77,5.145,2.506,3.76,2.18,3.326,1.854,9.68],[1.59,1.819,5.444,1.562,2.333,1.562,8,4.118,1.701,3.97,1.819,5.652,3.77,3.618,6.55,1.937,1.562],[3.84,6.555,9.604,2.368,1.583,2.166,5.402,9.277,10.805,10.694,7.798,1.333,2.131,2.361,1.756,8.937,1.465,2.444,2.27,5.152],[1.784,2.6,1.638,2.638,12.312,2.2,1.736,11.59,2.374,5.277,6.541,4.597,4.548,4.77,1.868,3.347,8.638,8.124,2.986,5.111,1.631,2.555,12.5],[4.611,5.624,4.784,5.812,5.513,3.673,5.27,4.569,3.18,3.951,1.819,2.173,1.84,1.958,3.624,6.361,1.618,1.27,11.618,1.59,1.597,6.118,11.847,11.13,11.729,12.416,12.69,11.159],[13.395,12.374,4.659,4.944,2.576,1.701,1.354,1.645,12.305],[12.458,12.513,6.597,6.874,3.111,1.979,13.423,5.722,13.333,2.48,3.659,1.715,8.97,2.645,5.736,1.409,7.861,1.59],[13.52,2.916,6.298,3.743,12.59,4.798,4.215,5.84,1.368,6.916,9.479,3.548,10.833,12.388,6.715,4.763,1.895],[10.736,10.937,10.256,2.41,2.312,2.777,10.55,13.326,12.444,5.201,6.673,5.902,5.69,6.402,4.527,6.777,1.702,4.966,5.741,3.333,6.341,5.533,6.324,1.983,1.883,2.174],[13.258,1.824,1.766,4.441,5.924,4.366,2.958,2,2.724,2.708,11.15,11.633,2.658,12.916,6.983,1.308,1.608,4.958,5.591,4.991,4.55,2.55,11.541,2.374,11.708,11.391,11.558,1.724,7.55]]},{"inst":"trumpet","pageDurs":[[1.569,2.652,1.472,4.59,9.62,6.45,13.791,1.443,2.83,2.853,2.793,6.61],[1.972,4.55,1.48,3.87,1.761,3.104,6.51,3.94,4.645,7.32,2.9,4.814,4.388,3.58,3.464,4.488,2.969],[35.252,9.89,3.114,9.914,8.744,4.115],[1.547,9.645,3.741,1.105,16.115,7.591,5.47,5.746,1.623,6.365,6.36,3.134,13.4,1.868,4.533,1.543,1.695,2.817,3.19],[5.63,5.63,2.228,5.712,2.95,1.442,1.451,2.15,2.29,2.56,14.222,14.922,4.39,1.42,2.681,4.213,7.207,7.47,4.44],[1.409,5.537,1.76,4.209,5.437,5.16,8.649,8.551,4.536,2.762,5.185,7.216,9.185,6.981,6.54,5.943,4.905,7.761,20.531,3.676,7.425,6.354,9.533,3.452,7.95,1.54,13.288,0.941],[0.877,2.703,1.61,2.325,5.322,4.31,6.543,1.64,1.527,0.338,4.527,0.343,3.319,3.789,5.575,0.783,3.778,7.896,1.193,16.43],[6.491,22.548,4.164,10.263,0.264,0.629,1.293,1.554,1.754,2.138,24.91,0.373,4.167,7.892,9.67,6.377,5.637,14.108,2.88],[1.732,2.556,2.7,2.228,1.99,1.298,3.72,0.359,1.96,3.862,1.464],[5.34,2.36,0.95,1.838,1.397,0.944,1.866,4.185,6.703,8.168,16.636,4.587,2.232,3.754,2.806,1.932,9.379,1.37,4.725],[42.755,4.159,1.975,10.422,4.326,1.332,3.333,0.97,3.546,2.462,2.522,3.404,7.321,3.406,19.736,1.889,4.404,2.429,2.856,23.964,3.77,4.133],[7.365,3.304,7.949,1.104,5.238,8.3,0.716,6.752,6.543,20.215,5.843,8.478,9.798,1.41,14.629,1.148,29.252,1.681,2.35,6.251,9.554,2.381,3.32,1.558,6.786,5.144,1.228,0.316,4.734]]},{"inst":"tuba","pageDurs":[[3.677,1.1,2.204,3.61,4.619,2.301,2.152,3.519,1.621,3.698,4.956,4.628,7.23,3.452,3.359,3.624,4.489],[2.99,5.389,2.396,3.2,1.954,2.105,4.144,1.109,5.322,1,5.36,1.846,4.367],[6.98,0.422,1.866,0.948,3.714,1.352,1.627,2.88,2.47,4.212,2.337],[6.679,2.673,2.125,3.865,0.973,8.794,6.116,6.747,1.452,2.9],[2.363,1.848,1.205,2.428,6.436],[2.894,5.31,1.764],[1.353,6.231,3.82,4.102,1.527,1.306,0.913,2.643,3.318,2.822,2.855,1.349,1.533],[3.865,0.595,3.81,4.569,2.174,4.54,2.848],[0.952,1.901,0.464,1.855,2.933,1.289,1.52,1.72,1.737,3.343,0.924,1.426,1.347,1.689,2.185,1.995,0.956,0.968,1.296,1.143,0.703,2.459,1.687,1.757,2.4],[1.299,1.109,3.787,2.583,2.165,2.964,2.129,1.271,2.421,2.19,1.932,1.805,3.133,1.296,1.607,2.521],[2.847,3.472,2.103,3.173,0.524,2.33,4.215,3.869,1.826,2.352],[1.217,4.878,2.302,2.403,6.314,3.217,5.483,2.873,3.235,4.626]]},{"inst":"viola2","pageDurs":[[7.897,8.182,3.513,12.772,11.55,9.625,9.715,5.437,7.131,14.319,16.618,2.374,2.513,7.25,11.319,1.416,19.562,1.548,1.312,10.48],[3.645,9.75,2.604,1.624,9.229,4.791,4.381,20.527,1.736],[8.902,6.638,5.506,2.215,22.333,30.358],[17.866,18.35,11.574],[10.433,9.1,6.224,3.891,23.731,3.352,6.99,1.503],[18.558,11.318,0.964,5.529,7.891,2.577,12.24,11.41,23.15,17.158],[12.5,7.12,3.63,5.19,8.31,3.61,5.38,4.98,1.8,12.3,2.49,3.6,1.66,2.64,4.38,3.171,7.239,6.851,8.593,2.233,3.819,3.304,1.354,9.346,4.577,3.767,6.798,1.423,12.937,16.298,10.763,6.5,1.881,1.215,5.715],[16.69,3.784,22.312,3.965,8.187,2.458,11.166,4.111,1.277,5.68,12.83,4.687,8.354,20.229,10.159,5.888,11.791,1.881,7.784,5.944,10.854,5.506,14.972,5.75,16.423],[2.145,3.275,2.912,1.385,1.825,1.243,10.145,1.3,19.18,1.44,0.895,6.536,9.456,3.879,1.115,5.712,3.4,1.371,14.24,10.578,1.37,1.47,1.74,2.614,6.536,1.506,1.463,1.356,7.12,4.696,1.626,1.591,3.864,2.95,2.912,2.99],[5.598,5.506,0.809,8.572,5.268,2.803,2.455,1.104,2.127,7.89,0.961,7.539,1.81,6.322,7.468,6.895,6.762,7.99,0.869,3.989,0.92,4.153,5.248,6.895,2.803],[11.366,3.539,1.483,11.38,2.813,8.685,1.227],[13.463],[5.882,7.99,9.749,2.659,4.787,11.509,3.83,5.271,10.528,6.813,1.239,15.298,2.628,11.651,9.389,1.847],[8.714,10.467,8.288,1.912],[4.902,5.156,0.97,2.291,4.872,7.341,0.592,0.941,0.911,6.447,6.27],[10.11,9.301,0.84,0.935,1.687,1.9,4.558,19.922]]},{"inst":"viola1","pageDurs":[[2.606,4.968,14.11,7.113,13.161,9.878,4.633,1.141,7.683,15.316,10.916,3.108,5.691],[4.508,1.374,5.683,1.308,6,2.55,5.68,11.714,2.515,18.235,5.576],[5.204,4.3,3.677,3.302,2.203,5.97,5.174,0.86,3.777,5.351,13.285,4.554,3.345,1.758,4.323,4.658,4.75,3.265,22.317],[10.405,3.191,7.197,3.858,8.439,2.905,4.617,1.631,4.762,2.821,1.197,1.442,4.428],[0.091],[41.288,19.7],[1.607,1.294,1.302,2.326,0.9,6.92,17.529,3.632,5.256,3.87,7.129,8.785,5.276,11.252,2.644,31.266,5.955,6.389,6.417,1.4,0.86,4.127,1.77,25.487,2.636,4.468,3.201,10.31,10.643,13.937,4.12,1.89],[2.31,20.389,9.818,1.687,5.102,6.92,1.437,9.413,2.763,9.649,2.917,1.572,6.606,1.316,3.978,3.665,9.823,13.24,7.829,3.81,8.4,7.44,1.88,1.71,9.94,1,3.1],[2.112,4.484,2.609,3.333],[15.462,4.467],[7.795,5.34,1.469,4.334,6.319,7.968,5.98,12.54,4.299,1.273,2.534,6.151],[4.803,9.565,6.342,10.121,20.434,4.843,5.364],[2.256,3.263,1.66,5.98,1.516,1.851,10.896,2.685,5.839,2.459,2.662,5.364,3.489,1.238,3.524,4.299,2.303,2.65,2.251,2.222,1.99,5.318,1.776,2.471,2.39,2.361,1.435,8.165,58.234,8.553,4.67,12.893,3.125,7.835,5.457],[2.285,1.984,2.83,4.155,4.907,7.997,8.958,12.968,4.502,4.519,3.402,5.156,2.552,3.275,1.765,12.824,2.534,3.935,2.69,2.563,6.481,2.685,17.158,2.146,18.263],[5.648,6.209,3.703,5.445,10.752,2.581,1.446,2.17,2.2,4.5,1.394,13.576,3.96,5.769,2.729,1.986,1.12,9.133,18.36,19.603,37.943,22.96,7.537,1.765,1.871,25.53,1.972],[49.965,5.717,5.648,12.193,3.819,6.313,4.131,11.55,3.518,6.331,18.188,2.546,7.505,10.119,2.16,9.32,5.45,20.78]]},{"inst":"bassoon","pageDurs":[[2.75,4.223,2.161,3.89,6.52,2.473,2.17,2.993,2.276,2.165,2.165,3.674,5.471,3.74,5.163,3.931],[4.492,2.153,2.231,4.51,3.215,4.676,5.196,5.295,3.794,2.494,7.518,3.341,4.206,4.314,7.571],[5.778,4.792,3.999,4.756,2.684,5.773,3.737,3.422,4.506,6.959,1.599,1.701,4.379,3.67,6.941,5.402,4.294,2.58,2.628,4.264,5.826],[3.785,3.446,4.124,1.968,3.882,3.755,5.99,5.124,5.499,8.691,6.553,4.857,4.609],[5.584,3.119,1.635,2.949,6.637,4.53,8.171,6.319],[4.795,4.653,9.69,6.593,9.829,5.67],[6.471,5.643,3.531,3.337,3.688,4.27,6.135,3.737,6.795,4.893,4.972],[4.33,5.917,2.64,5.832,4.482,4.106,4.172],[10.155,2.249,4.804,2.694,3.96,5.505,5.632,4.264,2.901,3.912,7.989,6.359],[4.463,2.307,1.944,5.99,2.549,3.664,3.712,3.41,4.669,5.51,3.34,3.373,5.899,5.124],[4.633,3.894,10.484,5.239,5.572,3.573,5.445,5.814,4.64,4.494,3.924,3.876,3.428,2.834,2.852,5.735,3.119,3.494,2.949],[2.283,9.751,1.971,7.769,2.15,3.78,10.78,7.831,5.43]]},{"inst":"clarinet","pageDurs":[[6.82,3.92,5.94,15.787,3.84,7.288,3.86,14.469,6.192,6.767,6.802,4.677,2.676,14.209,5.636,11.71,10.88,4.973,4.132,3.676,12.421,2.676,0.935,5.665,6.56,6.903,5.825,3.85,6.524,3.83,3.835],[7.961,6.767,3.629,6.244,5.66,7.697,9.609,6.878,5.562,14.422,2.535,17.845,10.433,2.472,7.232,4.152,0.924,6.11,3.872,9.662,7.279,14.834],[3.21,9.707,6.673,3.312,4.563,7.113,6.786,5.946,5.543,11.739,6.882,2.615,5.51,4.145,4.574,2.362,7.531,4.637,1.757,9.369,2.483,5.18,3.29,1.669,6.746],[17.957,2.124,3.162,2.802,10.462,2.758,6.651,3.389,1.474,10.396,5.943],[2.351,9.82,6.354,6.511,1.944,2.546,4.915,5.811,21.626],[9.699,6.31,7.726,1.173,7.271,10.972,5.884,3.474,6.313,1.742,7.461,0.594,6.57,10.235,5.147,3.815,3.356,3.411],[15.133,4.461,6.83,6.882,4.783,3.261,8.375,2.175,6.115,5.517,10.561,4.376,6.306,2.832,6.221,2.395,3.852,4.303,3.444,2.832,11.967,6.412],[2.435,13.614],[2.623,4.56,3.646,2.854,6.93,5.59,1.823,1.474,5.844,3.488,10.136,3.646,3.716,1.955,3.158,2.201,4.31,3.11,3.521],[4.174,1.995,6.9,4.149,7.971,3.397,3.716,2.916,2.347,5.681,2.719,3.721,3.321,2.104,3.562,5.635,4.786,6.22],[5.527,5.445,5.984,3.632,8.678,0.944,1.223,0.9,3.733,3.106,2.763,6.669,2.897,7.233,8.31,2.6],[5.692,5.749,8.463,4.659,7.62,6.459,7.157,3.867,5.2,4.25,1.768,1.496,4.57,4.12,4.697,8.653,4.773,9.566]]},{"inst":"piano","pageDurs":[[720],[720],[1080],[720],[1150],[1190],[360],[1260],[735],[415],[690],[550],[660],[540],[540]]}]');
 
 /***/ }),
 

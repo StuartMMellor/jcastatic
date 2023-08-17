@@ -56451,7 +56451,7 @@ var GetAudioWFD = /*#__PURE__*/_createClass(function GetAudioWFD() {
   _classCallCheck(this, GetAudioWFD);
   _defineProperty(this, "getPageData", function (props, callback) {
     var inst;
-    _this.axiosGet('res/info/instrumentPages.json', function (instrumentPages) {
+    _this.axiosGetJson('res/info/instrumentPages.json', function (instrumentPages) {
       new Promise(function (resolveInner, reject) {
         inst = instrumentPages.info.find(function (inst) {
           return inst.part === props.inst;
@@ -56499,13 +56499,13 @@ var GetAudioWFD = /*#__PURE__*/_createClass(function GetAudioWFD() {
     return new Promise(function (resolve, reject) {
       SE = SE.replace('bassoon', 'sax');
       SE = SE.replace('bassoon', 'sax');
-      _this.axiosGet(SE, resolve);
+      _this.axiosGetText(SE, resolve);
     });
   });
   _defineProperty(this, "sendWaveformData", function (pageWaveformData, callback) {
     callback(pageWaveformData);
   });
-  _defineProperty(this, "axiosGet", /*#__PURE__*/function () {
+  _defineProperty(this, "axiosGetText", /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(URL, resolve) {
       var response, textData;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
@@ -56544,6 +56544,47 @@ var GetAudioWFD = /*#__PURE__*/_createClass(function GetAudioWFD() {
     }));
     return function (_x, _x2) {
       return _ref.apply(this, arguments);
+    };
+  }());
+  _defineProperty(this, "axiosGetJson", /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(URL, resolve) {
+      var response, textData;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.prev = 0;
+            _context2.next = 3;
+            return fetch(URL);
+          case 3:
+            response = _context2.sent;
+            if (!response.ok) {
+              _context2.next = 11;
+              break;
+            }
+            _context2.next = 7;
+            return response.json();
+          case 7:
+            textData = _context2.sent;
+            resolve(textData);
+            _context2.next = 12;
+            break;
+          case 11:
+            console.error('Response was not OK:', response.statusText);
+          case 12:
+            _context2.next = 17;
+            break;
+          case 14:
+            _context2.prev = 14;
+            _context2.t0 = _context2["catch"](0);
+            console.error('Fetch error:', _context2.t0);
+          case 17:
+          case "end":
+            return _context2.stop();
+        }
+      }, _callee2, null, [[0, 14]]);
+    }));
+    return function (_x3, _x4) {
+      return _ref2.apply(this, arguments);
     };
   }());
 });
